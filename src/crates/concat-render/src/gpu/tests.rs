@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! The GPU compositor against the CPU reference: the same plans, and the
 //! pictures must agree. Every test skips on a machine without an adapter,
@@ -1411,8 +1412,13 @@ fn measured(
 /// transparent band whose colour must not bleed into anything.
 #[test]
 fn the_gaussian_blur_is_a_direct_gaussian() {
-    const PEAK: f64 = 6.0;
     let Some(mut gpu) = gpu() else { return };
+    assert_direct_gaussian(&mut gpu);
+}
+
+fn assert_direct_gaussian(gpu: &mut WgpuCompositor) {
+    const PEAK: f64 = 6.0;
+    eprintln!("Gaussian oracle: adapter {:?}", gpu.adapter_info());
     let blur = concat_effects::Catalogue::builtin()
         .get("concat.gaussian-blur")
         .expect("a built-in");
@@ -1438,7 +1444,7 @@ fn the_gaussian_blur_is_a_direct_gaussian() {
             [[across, 1], [down, down]],
             "radius {radius}"
         );
-        let got = treated(&mut gpu, size, &picture, &[pass]);
+        let got = treated(gpu, size, &picture, &[pass]);
         // Every pixel where the sum is quick, a grid of them - the edges
         // among them - where it is not.
         let stride = (radius / 4.0).max(1.0) as usize;
@@ -1455,6 +1461,118 @@ fn the_gaussian_blur_is_a_direct_gaussian() {
         );
         assert!(rms < 0.0005 * PEAK, "radius {radius}: rms {rms}");
     }
+}
+
+/// `column` uses frame.size.y instead of a texture query when computing its
+/// kernel bound. Keep the manifest assumption explicit for every radius,
+/// rather than silently accepting a parameter-dependent vertical shrink.
+#[test]
+fn gaussian_across_keeps_the_full_frame_height() {
+    let blur = concat_effects::Catalogue::builtin()
+        .get("concat.gaussian-blur")
+        .expect("a built-in");
+    let across = blur
+        .manifest
+        .wgsl
+        .as_ref()
+        .expect("a WGSL package")
+        .passes
+        .iter()
+        .find(|pass| pass.target == "across")
+        .expect("the horizontal pass");
+    if let Some(shrink) = &across.shrink {
+        assert_eq!(
+            shrink[1].trim().parse::<f64>(),
+            Ok(1.0),
+            "Gaussian column assumes an unconditionally full-height across pass"
+        );
+    }
+}
+
+/// WARP previously created the Gaussian pipelines and rendered 16x16, but
+/// stalled on 18x18 and 480x270: their intermediate pictures have odd sizes.
+/// Exercise those sizes without a GUI, then retain the same numerical oracle
+/// as the ordinary adapter, including HDR, alpha and clamped boundaries.
+#[cfg(windows)]
+#[test]
+fn software_gaussian_handles_odd_intermediate_sizes() {
+    let Some(mut gpu) = WgpuCompositor::software() else {
+        assert!(
+            std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
+            "CONCAT_REQUIRE_GPU is set and no software GPU adapter is usable"
+        );
+        eprintln!("no usable software GPU adapter; skipping");
+        return;
+    };
+    eprintln!("software Gaussian: adapter {:?}", gpu.adapter_info());
+    let blur = concat_effects::Catalogue::builtin()
+        .get("concat.gaussian-blur")
+        .expect("a built-in");
+    let pass = blur.trial_pass().expect("a shader");
+    eprintln!("software Gaussian: creating pipelines");
+    gpu.shader(&pass);
+    assert!(
+        gpu.shaders.contains_key(&pass.key),
+        "Gaussian pipeline refused"
+    );
+    for (side, alpha) in [(16, 0.5), (16, 1.0), (18, 0.5)] {
+        eprintln!("software Gaussian: pipelines ready; dispatching {side}x{side} alpha={alpha}");
+        let colour = [2.0, 0.2, 0.1, alpha];
+        let got = gpu
+            .probe(std::slice::from_ref(&pass), colour, side, 0.0)
+            .expect("reads back");
+        eprintln!("software Gaussian: read back {got:?}");
+        assert!(near(got, colour, 0.004), "flat Gaussian: {got:?}");
+    }
+    // A card-size picture also covers fractional alpha transitions, bright
+    // pixels and the transparent band; a flat image alone cannot show a blur.
+    for (size, alpha) in [
+        ((18, 18), Some(0.5)),
+        ((480, 270), Some(0.5)),
+        ((480, 270), Some(1.0)),
+        ((480, 270), None),
+    ] {
+        eprintln!("software Gaussian: preparing {size:?} alpha={alpha:?}");
+        let picture = match alpha {
+            Some(alpha) => vec![[2.0, 0.2, 0.1, alpha]; (size.0 * size.1) as usize],
+            None => busy(size, 6.0),
+        };
+        gpu.used.values_mut().for_each(|used| *used = 0);
+        gpu.composites += 1;
+        let source = written(&mut gpu, size, &picture);
+        eprintln!("software Gaussian: uploaded; submitting passes");
+        let drawn = gpu.run_passes(
+            size.0,
+            size.1,
+            source,
+            std::slice::from_ref(&pass),
+            0.0,
+            0.0,
+        );
+        eprintln!("software Gaussian: submitted; reading back");
+        let got = read_floats(&gpu, size, drawn);
+        gpu.retire();
+        eprintln!("software Gaussian: read back {} pixels", got.len());
+        assert_eq!(got.len(), (size.0 * size.1) as usize);
+        assert!(got.iter().flatten().all(|value| value.is_finite()));
+        if let Some(alpha) = alpha {
+            assert!(
+                got.iter()
+                    .all(|&pixel| near(pixel, [2.0, 0.2, 0.1, alpha], 0.004))
+            );
+        } else {
+            let (worst, at, rms) = measured(&got, size, 16, |x, y| {
+                Some(gaussian_at(&picture, size, (x, y), 10.0))
+            });
+            eprintln!("software Gaussian card: worst {worst:.5} at {at:?}, rms {rms:.6}");
+            assert!(
+                worst < 0.0025 * 6.0,
+                "card-size Gaussian: {worst} off at {at:?}"
+            );
+            assert!(rms < 0.0005 * 6.0, "card-size Gaussian rms: {rms}");
+        }
+    }
+    assert_direct_gaussian(&mut gpu);
 }
 
 /// A pass's picture is the layer's size divided by its shrink, rounded

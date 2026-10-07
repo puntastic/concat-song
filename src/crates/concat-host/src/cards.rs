@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Effect cards: every picture package's still, drawn by the package.
 //!
@@ -19,8 +20,8 @@
 //! package and a fingerprint of everything it was drawn from: the shader,
 //! the knobs' defaults, the table, and how cards are drawn. A package whose
 //! shader or defaults change has a new name and so a new card, and the old
-//! one is swept away ([`prune`]). The window reads what is there as it opens
-//! and draws the rest on a thread of its own ([`Painter`]).
+//! one is swept away ([`prune`]). Callers can inspect the cached reference
+//! previews or draw further ones through [`Painter`] without a display toolkit.
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
@@ -589,10 +590,24 @@ mod tests {
     /// `CONCAT_CARDS_DIR` to keep the cards for a look.
     #[test]
     fn every_card_draws_and_shows_its_package_at_work() {
-        let Some(compositor) = WgpuCompositor::new() else {
+        // An explicit diagnostic path for software-adapter qualification;
+        // ordinary application selection is unchanged.
+        let software = std::env::var_os("CONCAT_TEST_SOFTWARE_CARDS").is_some();
+        eprintln!("cards: opening compositor (software_only={software})");
+        let compositor = if software {
+            WgpuCompositor::software()
+        } else {
+            WgpuCompositor::new()
+        };
+        let Some(compositor) = compositor else {
+            assert!(
+                !software && std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
+                "requested card-rendering adapter is unavailable"
+            );
             eprintln!("no usable GPU adapter; skipping");
             return;
         };
+        eprintln!("cards: adapter {:?}", compositor.adapter_info());
         let dir = std::env::var_os("CONCAT_CARDS_DIR")
             .map(PathBuf::from)
             .unwrap_or_else(|| scratch("draw"));
@@ -602,6 +617,9 @@ mod tests {
         let mut failed = Vec::new();
         let cards = cards(Catalogue::builtin(), &dir);
         for card in &cards {
+            // Emit before the potentially blocking native call, not only
+            // after it. --nocapture then locates a slow or hung package.
+            eprintln!("cards: drawing {}", card.id);
             let frame = match painter.frame(card) {
                 Ok(frame) => frame,
                 Err(error) => {

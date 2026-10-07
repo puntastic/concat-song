@@ -53,10 +53,10 @@
     ".github/workflows/engine-native.yml": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "afb91c430c6adf71888c69024f3ae33e0be7fce2",
+      "git_blob": "4ce1fa97dffd52240744071605302f51e7dec69b",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Pin Windows CI libclang to the checksum-verified local build input.",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -693,20 +693,20 @@
     "docs/presentation-hooks.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "dfdca9bd6ed5ccd4ae6786e10e5a7bbd67e01282",
+      "git_blob": "14f983ca7da093aff48fcd367755e3017a6600c2",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
       "upstream_blob": null,
       "upstream_mode": null
     },
     "docs/windows-build.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "17d695baef9242aac55259846227a313dc6b3a17",
+      "git_blob": "7d7b87f8054ffeaebceac52691af1b3bd982d67c",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Keep compiler discovery separate from graphics runtime DLL search.",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -733,10 +733,10 @@
     "scripts/check_modification_notices.py": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "35ed51ff2493506eeb17cd7541d8b6c24e890a8b",
+      "git_blob": "2f1e682c50b467a24042c91f9f29ec8f4024e8fe",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1003,10 +1003,10 @@
     "scripts/tests/test_modification_notices.py": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "9c18a62fbb57778dba066b17d1429170901295ed",
+      "git_blob": "c0f6170b030fb31110b0e612c0f4aab119cfd8df",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1150,6 +1150,16 @@
       "upstream_blob": "2daea09f6367efa24f457c928310524bba1b7912",
       "upstream_mode": "100644"
     },
+    "src/crates/concat-effects/packages/concat.gaussian-blur/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "2f01798174f3dc6cfefe0f8b13ec3b2a7e8e62ad",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": "6255e4601312a2c5537953f547c57b0bfa1a42d9",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-host/Cargo.toml": {
       "change": "modified",
       "changed_on": "2026-10-07",
@@ -1169,6 +1179,16 @@
       "summary": "Agent-only engine/API foundation and fork modification-notice process",
       "upstream_blob": null,
       "upstream_mode": null
+    },
+    "src/crates/concat-host/src/cards.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "029f678a5f2bb1e1d6a703c19ab85fdfae62a7ed",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": "56138db70bbf28dc19d5488b1bdf99437d4b893f",
+      "upstream_mode": "100644"
     },
     "src/crates/concat-host/src/dirs.rs": {
       "change": "modified",
@@ -1548,6 +1568,16 @@
       "notice": "inline",
       "summary": "Agent-only engine/API foundation and fork modification-notice process",
       "upstream_blob": "a9f879e81631a9540ea4b91c4d6085c06b30c1db",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-render/src/gpu/tests.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "862a84435abade59ba8f58edec257953fc144e99",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": "7a831b1e8bddcd4be0ff6df21bc56515d012f7c3",
       "upstream_mode": "100644"
     },
     "src/crates/concat-text/src/lib.rs": {
@@ -3052,7 +3082,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "143db128c87fe24e5443b5106b0c13a2700b1b5fa84204d148004bf9985a8000",
+  "index_sha256": "e60372f6d6668b9c8a93d6ad9a08ac1312fb41acd1d03d77b218479a5384592c",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,

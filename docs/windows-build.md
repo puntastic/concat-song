@@ -12,22 +12,37 @@ Compiler discovery and runtime DLL search are kept separate. The wrapper takes
 the VS development environment's INCLUDE/LIB/toolchain variables but restores
 the caller's PATH plus the explicitly selected Rust, FFmpeg and CMake paths.
 In the first local validation, carrying the full VS/SDK PATH into rendering
-caused access violations; the same render binary passed all86 tests with the
+caused access violations; the same render binary passed all 86 tests with the
 runtime path restored. Several graphics-compiler DLL versions were present in
 those SDK paths, so this is an environment repair, not evidence of a fixed
 renderer algorithm or an isolated defect in one named DLL. Never edit the
 machine-wide PATH to make this helper work.
 
+A separate software-renderer defect was reproduced after the native build was
+working: the original Gaussian shader completed at 16x16 but stalled at 18x18
+and at the 480x270 effect-card size on Microsoft Basic Render Driver (WARP).
+Its column loop now gets the unchanged across-pass height from the frame
+uniform, retaining the reciprocal arithmetic, kernel, sampling and alpha
+handling. The manifest's full-height assumption is tested. Software and default
+adapter numerical oracles passed, and the entire software effect-card test
+completed locally. This supports the scoped workaround, not a proven root cause
+inside a particular Windows driver or compiler.
+
+Windows CI runs the full effect-card test as a required, logged preflight.
+Only a verified pass permits the remaining workspace suite to filter that
+already-run test. A timeout, unavailable required adapter or failed preflight
+leaves validation incomplete; it does not turn into a skip or a green remainder.
+
 The first local check used:
 
-- Rust1.93.0 MSVC under `cargo/` and `rustup/`; official rustup installer SHA256
+- Rust 1.93.0 MSVC under `cargo/` and `rustup/`; official rustup installer SHA256
   `6f4bef66261261fcb43131be8720bab817d403a09edec7455c371974b90bdb7e`.
 - The existing Visual Studio C++ toolchain, discovered through `vswhere`.
 - FFmpeg `ffmpeg-n8.1.3-14-g330caae0c1-win64-gpl-shared-8.1.zip` from BtbN
   release `autobuild-2026-10-06-13-06`, SHA256
   `751c56e0b63426426487ab4048031b0166281c59c0a7e33ef7dd7428495e1d8a`.
   Extract under `vendor/ffmpeg/` preserving the archive's enclosing directory.
-- libclang18.1.1 Windows wheel from PyPI, SHA256
+- libclang 18.1.1 Windows wheel from PyPI, SHA256
   `4dd2d3b82fab35e2bf9ca717d7b63ac990a3519c7e312f19fa8e86dcc712f7fb`.
   Extract under `vendor/libclang-18.1.1/`; no global Python installation needed.
 - Lockfile-bound native packages downloaded by Cargo/build scripts, including
@@ -52,3 +67,7 @@ use it to make a media check appear supported without its actual dependencies.
 The wrapper leaves build caches outside the source tree and caps parallel jobs
 at two. Optional speech needs additional inputs and is not covered by these
 examples. See the CI workflow for its separately selected lane.
+
+For a second worktree, pass Cargo's `--target-dir` in `-CargoArgs` to keep its
+build outputs separate. The wrapper sets `CARGO_TARGET_DIR` from `-BuildRoot`,
+so a value inherited from the parent shell is not a separate-target override.
