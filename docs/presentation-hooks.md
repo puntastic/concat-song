@@ -8,7 +8,7 @@ not the old manual editor and its untested dependencies.
 
 | Need | Existing connection point | Boundary |
 | --- | --- | --- |
-| Identify build | `version`, capabilities | Declaration is not a behavior test |
+| Identify build | `version`, capabilities | Declaration is not a behavior test; `gpu` reflects lazy monitor initialization, not the complete compiled operation set |
 | Inspect edit | `project.get`, `project.document` | Bind views to actual project/timeline/live or saved state |
 | Request change | `edit.apply`, `edit.undo`, `edit.redo` | Use established session owner |
 | Save/reopen | Project lifecycle API | Explicit save; undo does not survive reopening |

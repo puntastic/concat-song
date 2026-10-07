@@ -26,7 +26,7 @@ FORK = "https://github.com/puntastic/concat-song"
 INDEX = "MODIFICATIONS.json"
 INLINE_SUFFIXES = {
     ".rs", ".py", ".sh", ".bash", ".toml", ".yaml", ".yml", ".nix",
-    ".c", ".h", ".cpp", ".hpp", ".js", ".ts", ".css", ".scss", ".ps1",
+    ".c", ".h", ".cpp", ".hpp", ".js", ".ts", ".css", ".scss", ".ps1", ".wgsl",
 }
 NOTICE = "Modified for concat-song on {day}; see FORK-NOTICE.md."
 

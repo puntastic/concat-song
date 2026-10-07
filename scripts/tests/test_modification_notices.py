@@ -139,6 +139,15 @@ class ModificationNoticesTests(unittest.TestCase):
         self.record()
         self.assertEqual("", self.errors())
 
+    def test_shader_source_requires_a_dated_inline_notice(self):
+        self.write("effect.wgsl", "@fragment fn fs_main() {}\n")
+        with self.assertRaisesRegex(notices.NoticeError, "add a valid comment"):
+            self.record()
+        self.write("effect.wgsl", "// " + notices.NOTICE.format(day=DAY)
+                   + "\n@fragment fn fs_main() {}\n")
+        self.record()
+        self.assertEqual("", self.errors())
+
     def test_preserved_headers_succeed_and_removed_copyright_or_spdx_fail(self):
         self.write("engine.rs", self.modified())
         self.record()

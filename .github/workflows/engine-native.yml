@@ -54,6 +54,9 @@ jobs:
         with:
           workspaces: src
           key: native-${{ runner.os }}-${{ inputs.speech }}-1.93.0${{ runner.os == 'Windows' && '-libclang18.1.1' || '' }}
+          # Retain valid dependencies after a diagnostic step fails. A hard
+          # cancellation can still prevent the action's post-save from running.
+          cache-on-failure: true
 
       - name: Linux native libraries and software GPU
         if: runner.os == 'Linux'
@@ -148,7 +151,29 @@ jobs:
           fi
           cargo clippy --locked "${scope[@]}" --all-targets -- -D warnings
 
+      - name: Windows effect-card preflight (one required GPU test)
+        id: windows_cards
+        if: runner.os == 'Windows' && !inputs.speech
+        timeout-minutes: 15
+        working-directory: src
+        env:
+          CONCAT_REQUIRE_GPU: '1'
+        run: |
+          set -euo pipefail
+          # Default backend, live per-card diagnostics, and a bounded step.
+          # The 15-minute budget includes any cold test compilation.
+          cargo test --locked -p concat-host --lib -j 1 \
+            cards::tests::every_card_draws_and_shows_its_package_at_work \
+            -- --exact --nocapture --color never 2>&1 | tee "$RUNNER_TEMP/windows-cards.log"
+          grep -Eq '^test result: ok\. 1 passed; 0 failed; 0 ignored;' "$RUNNER_TEMP/windows-cards.log"
+          if grep -Ei 'no usable GPU adapter|skipping|skipped' "$RUNNER_TEMP/windows-cards.log"; then
+            echo 'The required effect-card preflight reported a skip.' >&2
+            exit 1
+          fi
+          echo 'verified=true' >> "$GITHUB_OUTPUT"
+
       - name: Test selected scope and expose skip messages
+        if: runner.os != 'Windows' || inputs.speech
         working-directory: src
         run: |
           set -euo pipefail
@@ -158,6 +183,22 @@ jobs:
             scope=(--workspace --exclude concat-speech)
           fi
           cargo test --locked "${scope[@]}" -j 1 -- --show-output 2>&1 | tee "$RUNNER_TEMP/engine-tests.log"
+
+      - name: Windows remaining engine tests (card test already verified)
+        id: windows_suite
+        if: runner.os == 'Windows' && !inputs.speech
+        working-directory: src
+        env:
+          CARD_PREFLIGHT_VERIFIED: ${{ steps.windows_cards.outputs.verified }}
+          CONCAT_REQUIRE_GPU: '1'
+        run: |
+          set -euo pipefail
+          # Never turn a failed, timed-out, missing, or empty preflight into
+          # a passing workspace run. Only this already-passed test is filtered.
+          test "$CARD_PREFLIGHT_VERIFIED" = true
+          cargo test --locked --workspace --exclude concat-speech -j 1 -- --show-output \
+            --skip cards::tests::every_card_draws_and_shows_its_package_at_work \
+            2>&1 | tee "$RUNNER_TEMP/engine-tests.log"
 
       - name: gRPC transport and CLI
         if: '!inputs.speech'
@@ -176,12 +217,30 @@ jobs:
 
       - name: Report observed skips
         if: always()
+        env:
+          SPEECH_SCOPE: ${{ inputs.speech }}
+          CARD_PREFLIGHT_OUTCOME: ${{ steps.windows_cards.outcome }}
+          CARD_PREFLIGHT_VERIFIED: ${{ steps.windows_cards.outputs.verified }}
+          WINDOWS_SUITE_OUTCOME: ${{ steps.windows_suite.outcome }}
         run: |
           {
             echo '### Native test skips and limits'
             echo 'Tests print captured output, including adapter/codec skips. A passing suite is not hardware coverage.'
+            if [ "$RUNNER_OS" = Windows ] && [ "$SPEECH_SCOPE" != true ]; then
+              echo "- Required one-test GPU card preflight: $CARD_PREFLIGHT_OUTCOME; verified: ${CARD_PREFLIGHT_VERIFIED:-false}."
+              echo "- Remaining Windows workspace suite: $WINDOWS_SUITE_OUTCOME."
+              echo '- The remainder filters only cards::tests::every_card_draws_and_shows_its_package_at_work after its preflight succeeds; this is coverage partition, not a missing test.'
+              echo '- The preflight uses the default graphics backend and a 15-minute budget including compilation. A timeout/failure leaves coverage incomplete; it does not permit the remainder to run.'
+              if [ "$CARD_PREFLIGHT_VERIFIED" != true ] && [ -f "$RUNNER_TEMP/windows-cards.log" ]; then
+                echo '#### Last card-preflight output (partial, not completion evidence)'
+                echo '```text'
+                tail -n 25 "$RUNNER_TEMP/windows-cards.log"
+                echo '```'
+              fi
+            fi
+            echo '- Cancellation can truncate logs, this summary, and dependency-cache saving; absent completion is not a pass.'
             found=false
-            for log in "$RUNNER_TEMP/engine-tests.log" "$RUNNER_TEMP/grpc-tests.log"; do
+            for log in "$RUNNER_TEMP/windows-cards.log" "$RUNNER_TEMP/engine-tests.log" "$RUNNER_TEMP/grpc-tests.log"; do
               if [ -f "$log" ]; then
                 found=true
                 echo "#### $(basename "$log")"
