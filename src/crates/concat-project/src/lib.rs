@@ -37,6 +37,7 @@ pub use model::Project;
 
 #[cfg(test)]
 mod tests {
+    mod surgery;
     use serde_json::json;
 
     use crate::commands::{ClipMove, ClipPatch, Command, NewMedia, TrackFlag, TrimEdge};
@@ -1141,9 +1142,8 @@ mod tests {
         );
     }
 
-    /// A freeze cuts the clip the way a split does, so a curved clip has to
-    /// come out of it the way a split leaves one: both pieces at the curve's
-    /// constant mean, meeting at the frozen source time.
+    /// A freeze preserves the entire curved source map on both moving
+    /// pieces, not merely a join computed from the old mean speed.
     #[test]
     fn freeze_frame_on_a_curved_clip_keeps_the_pieces_continuous() {
         let (mut editor, _, clip_id) = fixture();
@@ -1162,6 +1162,7 @@ mod tests {
                 ]),
             })
             .expect("curves");
+        let whole = editor.project().active().clip(&clip_id).unwrap().clone();
         let freeze_id = editor
             .apply(Command::FreezeFrame {
                 clip_id: clip_id.clone(),
@@ -1197,8 +1198,8 @@ mod tests {
             .expect("tail");
         for piece in [head, tail] {
             assert!(
-                piece.speed_curve.is_none(),
-                "a piece kept a curve its in-point was not computed for"
+                piece.speed_curve.is_some(),
+                "the restricted curve must survive"
             );
         }
         assert_eq!(
@@ -1206,6 +1207,24 @@ mod tests {
             tail.source_start,
             "the tail picks up where the head ends"
         );
+        assert_eq!(
+            tail.source_start, 3.5,
+            "the mean-speed in-point would incorrectly be 5"
+        );
+        for step in 0..=100 {
+            let t = f64::from(step) * whole.duration / 100.0;
+            let (piece, local) = if t <= head.duration {
+                (head, t)
+            } else {
+                (tail.as_ref(), t - head.duration)
+            };
+            assert!(
+                (crate::speed::source_at(piece, local).unwrap()
+                    - crate::speed::source_at(&whole, t).unwrap())
+                .abs()
+                    < 1e-10
+            );
+        }
     }
 
     #[test]

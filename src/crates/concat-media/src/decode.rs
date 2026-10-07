@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Pulling RGBA frames out of a file.
 //!
-//! One decoder does everything: it seeks to a start point and discards up to it frame-accurately,
+//! One decoder does everything: it seeks to a start point, taking the first
+//! frame at/after it unpaced or the frame covering it when paced,
 //! turns the picture the way its rotation asks, scales, runs the clip's
 //! effect chain through libavfilter, paces frames to a requested output rate
 //! by duplicating and dropping, repeats a still forever, and stops after a
@@ -64,8 +66,9 @@ pub trait FrameSource {
 pub trait SeekableSource: FrameSource {
     /// Moves to `to`, or the nearest decodable point before it.
     ///
-    /// The next [`FrameSource::next_frame`] returns the first frame at or
-    /// after that point.
+    /// Unpaced, the next [`FrameSource::next_frame`] returns the first frame
+    /// at or after that point. Paced output instead uses the source frame
+    /// whose presentation interval covers the requested output instant.
     fn seek(&mut self, to: Rational) -> Result<()>;
 }
 
@@ -546,6 +549,8 @@ fn video_filter(
 struct Source {
     frame: Video,
     pts: Option<Rational>,
+    /// The decoded frame's declared coverage, in its source timebase.
+    duration: Option<Rational>,
 }
 
 /// Decodes a file through libavcodec and libavfilter.
@@ -558,6 +563,8 @@ pub struct Decoder {
     /// taken off and every seek has it put back, so the file reads from
     /// its own first frame. See `ffi::start_of`.
     start: Rational,
+    /// Declared video-stream end relative to `start`, when available.
+    source_end: Option<Rational>,
     decoder: decoder::Video,
     rotation: i64,
     options: DecodeOptions,
@@ -578,6 +585,9 @@ pub struct Decoder {
     hardware: Option<(HwDevice, Pixel)>,
     /// The last picture's timestamp, for picking up in software after it.
     last_pts: Option<Rational>,
+    /// Last positive source-PTS separation: an explicit fallback only when
+    /// neither final-frame duration nor video-stream end is available.
+    source_step: Option<Rational>,
     /// The output frame instant the pacer is at, when pacing.
     tick: u64,
     origin: Rational,
@@ -613,6 +623,9 @@ impl Decoder {
         let stream_index = stream.index();
         let time_base = stream.time_base();
         let start = ffi::start_of(&stream);
+        let source_end = (stream.duration() > 0)
+            .then(|| ffi::seconds(stream.duration(), time_base))
+            .flatten();
         let rotation = ffi::rotation(&stream);
         let coded = {
             let parameters = stream.parameters();
@@ -681,6 +694,7 @@ impl Decoder {
             stream: stream_index,
             time_base,
             start,
+            source_end,
             decoder,
             rotation,
             options: options.clone(),
@@ -691,6 +705,7 @@ impl Decoder {
             discard_through: None,
             hardware: accelerated,
             last_pts: None,
+            source_step: None,
             tick: 0,
             origin: Rational::ZERO,
             current: None,
@@ -786,11 +801,23 @@ impl Decoder {
         if !self.options.keyframes_only {
             if after {
                 self.discard_through = Some(at);
+            } else if let Some(before) = self.seek_discard_point(at) {
+                self.discard_before =
+                    Some(self.discard_before.map_or(before, |old| old.max(before)));
             } else {
-                self.discard_before = Some(self.discard_before.map_or(at, |before| before.max(at)));
+                // Before the first paced source frame, recovery has the same
+                // covering-frame obligation as the initial seek. Do not turn
+                // the arbitrary output origin into an at-or-after cutoff.
+                self.discard_before = None;
             }
         }
         Ok(())
+    }
+
+    /// One selection rule for initial seek and software recovery. Only an
+    /// unpaced, non-keyframe-only read discards up to an arbitrary query time.
+    fn seek_discard_point(&self, to: Rational) -> Option<Rational> {
+        (!self.options.keyframes_only && self.options.frame_rate.is_none()).then_some(to)
     }
 
     /// The container seek, and the state reset that goes with it.
@@ -803,9 +830,13 @@ impl Decoder {
         // Keyframes only: the picture the container landed on is the one
         // wanted, and discarding up to the target would throw it away and
         // wait for the *next* keyframe, a whole group of pictures late.
-        self.discard_before = (!self.options.keyframes_only).then_some(to);
+        // A pacer must see the predecessor as well: a seek into a source
+        // frame's display interval must not discard that covering frame.
+        // next_paced rolls from the landed keyframe to the actual target.
+        self.discard_before = self.seek_discard_point(to);
         self.discard_through = None;
         self.last_pts = None;
+        self.source_step = None;
         self.origin = to;
         self.tick = 0;
         self.current = None;
@@ -823,6 +854,13 @@ impl Decoder {
             let mut frame = Video::empty();
             match self.decoder.receive_frame(&mut frame) {
                 Ok(()) => {
+                    // SAFETY: receive_frame populated this live AVFrame.
+                    // FFmpeg 7+ defines duration in the same units as pts;
+                    // capture it before a hardware-to-memory copy of props.
+                    let duration_ticks = unsafe { (*frame.as_ptr()).duration };
+                    let duration = (duration_ticks > 0)
+                        .then(|| ffi::seconds(duration_ticks, self.time_base))
+                        .flatten();
                     let pts = frame
                         .timestamp()
                         .and_then(|ticks| ffi::seconds(ticks, self.time_base))
@@ -865,8 +903,17 @@ impl Decoder {
                     }
                     self.discard_before = None;
                     self.discard_through = None;
+                    if let (Some(previous), Some(now)) = (self.last_pts, pts)
+                        && now > previous
+                    {
+                        self.source_step = Some(now - previous);
+                    }
                     self.last_pts = pts;
-                    return Ok(Some(Source { frame, pts }));
+                    return Ok(Some(Source {
+                        frame,
+                        pts,
+                        duration,
+                    }));
                 }
                 Err(ffmpeg::Error::Eof) => return Ok(None),
                 Err(error) if ffi::is_again(&error) => {}
@@ -1071,12 +1118,21 @@ impl Decoder {
             return Ok(None);
         };
         if self.source_done && self.pending.is_none() && !self.options.looping {
-            // Past the last frame. It has already shown once at its own
-            // instant; the file is over.
-            if let Some(pts) = current.pts
-                && pts + rate.frame_duration() <= target
-            {
-                return Ok(None);
+            // EOF is a source-coverage decision, never one output tick.
+            // Prefer this frame's duration, then the video-stream end. When
+            // both are absent, the last observed source interval is only a
+            // cadence fallback; no general VFR final-duration claim follows.
+            if let Some(pts) = current.pts {
+                let end = current
+                    .duration
+                    .map(|duration| pts + duration)
+                    .or_else(|| self.source_end.filter(|end| *end > pts))
+                    .or_else(|| self.source_step.map(|step| pts + step));
+                // With no source coverage data at all, only its own instant
+                // is known. Do not invent a hold from the output frame rate.
+                if end.map_or(target > pts, |end| target >= end) {
+                    return Ok(None);
+                }
             }
         }
         self.position = Some(target);
@@ -1581,6 +1637,167 @@ mod tests {
         }
         encoder.finish().expect("finishes");
         path
+    }
+
+    /// CPU-only fixture: no hardware encoder, decoder or compositor.
+    fn software_paced_steps(source_fps: u32, name: &str) -> PathBuf {
+        use crate::{EncodeOptions, Encoder, FrameSink};
+        let source_rate = FrameRate::from_int(source_fps);
+        let path = std::env::temp_dir().join(format!(
+            "concat-paced-{name}-{}-{source_fps}.mp4",
+            std::process::id()
+        ));
+        let mut encoder = Encoder::create(
+            &path,
+            64,
+            64,
+            source_rate,
+            &EncodeOptions {
+                hardware: false,
+                preset: "ultrafast".to_owned(),
+                ..EncodeOptions::default()
+            },
+        )
+        .expect("software encoder");
+        for index in 0..source_fps {
+            let pixels = [index as u8 * 8, index as u8 * 8, index as u8 * 8, 255].repeat(64 * 64);
+            encoder
+                .write_frame(&Frame::from_rgba(64, 64, pixels).unwrap())
+                .unwrap();
+        }
+        encoder.finish().unwrap();
+        path
+    }
+
+    /// CPU-only coverage probes: no hardware encoder, decoder or compositor.
+    #[test]
+    fn surgery_paced_seek_keeps_the_covering_source_frame_through_its_source_end() {
+        for source_fps in [24u32, 30] {
+            let path = software_paced_steps(source_fps, "coverage");
+            let reference = {
+                let mut decoder =
+                    Decoder::open(&path, &DecodeOptions::default().in_software()).unwrap();
+                drain(&mut decoder)
+            };
+            assert_eq!(reference.len(), source_fps as usize);
+            for output_fps in [24u32, 60] {
+                let output_rate = FrameRate::from_int(output_fps);
+                for index in [source_fps / 2, source_fps - 1] {
+                    let requested =
+                        reference[index as usize].0.unwrap() + Rational::new(1, 1_000_000);
+                    let mut decoder = Decoder::open(
+                        &path,
+                        &DecodeOptions::default()
+                            .starting_at(requested)
+                            .at_rate(output_rate)
+                            .in_software(),
+                    )
+                    .unwrap();
+                    let frame = decoder
+                        .next_frame()
+                        .unwrap()
+                        .expect("the source frame still covers this instant");
+                    assert_eq!(
+                        worst_difference(&frame, &reference[index as usize].1),
+                        0,
+                        "wrong covering frame: source {source_fps}fps, output {output_fps}fps, at {requested}"
+                    );
+                    if index == source_fps - 1 {
+                        let mut count = 1;
+                        while decoder.next_frame().unwrap().is_some() {
+                            count += 1;
+                            assert!(count < 10);
+                        }
+                        let expected = (0..10)
+                            .take_while(|step| {
+                                requested + output_rate.time_of_frame(*step) < Rational::ONE
+                            })
+                            .count();
+                        assert_eq!(
+                            count, expected,
+                            "EOF must follow source coverage, not output cadence"
+                        );
+                    }
+                }
+            }
+            // Unpaced is still explicitly at-or-after, not the display-frame contract.
+            let query = reference.last().unwrap().0.unwrap() + Rational::new(1, 1_000_000);
+            {
+                let mut unpaced = Decoder::open(
+                    &path,
+                    &DecodeOptions::default().starting_at(query).in_software(),
+                )
+                .unwrap();
+                assert!(unpaced.next_frame().unwrap().is_none());
+            }
+            {
+                let mut after_end = Decoder::open(
+                    &path,
+                    &DecodeOptions::default()
+                        .starting_at(Rational::ONE + Rational::new(1, 1_000_000))
+                        .at_rate(FrameRate::from_int(10))
+                        .in_software(),
+                )
+                .unwrap();
+                assert!(after_end.next_frame().unwrap().is_none());
+            }
+            let _ = std::fs::remove_file(path);
+        }
+    }
+
+    /// Deterministic recovery seam, without inducing a real device failure.
+    #[test]
+    fn surgery_software_recovery_preserves_paced_coverage_and_unpaced_order() {
+        let path = software_paced_steps(30, "recovery");
+        let requested = Rational::new(500_001, 1_000_000);
+        let check = |got: &[(Option<Rational>, Frame)], expected: &[(Option<Rational>, Frame)]| {
+            assert_eq!(
+                got.len(),
+                expected.len(),
+                "recovery changed the frame count"
+            );
+            for (index, ((at, frame), (want_at, want))) in got.iter().zip(expected).enumerate() {
+                assert_eq!(at, want_at, "recovery changed the clock at frame {index}");
+                assert_eq!(
+                    worst_difference(frame, want),
+                    0,
+                    "recovery changed source frame {index}"
+                );
+            }
+        };
+        for paced in [true, false] {
+            let mut options = DecodeOptions::default()
+                .starting_at(requested)
+                .in_software();
+            if paced {
+                options = options.at_rate(FrameRate::SIXTY);
+            }
+            let expected = {
+                let mut decoder = Decoder::open(&path, &options).unwrap();
+                drain(&mut decoder)
+            };
+            {
+                let mut before_first = Decoder::open(&path, &options).unwrap();
+                assert!(before_first.last_pts.is_none());
+                before_first.resume_in_software(None, false).unwrap();
+                check(&drain(&mut before_first), &expected);
+            }
+            {
+                let mut after_yield = Decoder::open(&path, &options).unwrap();
+                let frame = after_yield.next_frame().unwrap().unwrap();
+                let mut got = vec![(after_yield.position(), frame)];
+                // last_pts may include the pacer's lookahead. Preserve the
+                // same current/pending state used by the real recovery call.
+                let last_pts = after_yield.last_pts;
+                assert!(last_pts.is_some());
+                after_yield
+                    .resume_in_software(last_pts, last_pts.is_some())
+                    .unwrap();
+                got.extend(drain(&mut after_yield));
+                check(&got, &expected);
+            }
+        }
+        let _ = std::fs::remove_file(path);
     }
 
     /// Every frame and its instant, to the end.

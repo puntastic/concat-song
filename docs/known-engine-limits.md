@@ -2,27 +2,28 @@
 
 Recorded for concat-song on **2026-10-07**; see [FORK-NOTICE.md](../FORK-NOTICE.md).
 These are source-visible limits inherited from upstream
-`f1f2f3eab310a3220b2fcdb47531d3d3b85d6713`, not failures reproduced with rendered
-media in the GUI-removal slice. The relevant command files remain unchanged in
-that slice. Source inspection and runtime fidelity are different evidence.
+`f1f2f3eab310a3220b2fcdb47531d3d3b85d6713`, with scoped repair status below.
+Source inspection, plan-level regressions and rendered-media fidelity are
+different evidence.
 
 ## Nonlinear retiming during surgery
 
-`SplitClips` in [clips.rs](../src/crates/concat-project/src/commands/clips.rs)
-clears a clip's speed curve before splitting and uses constant speed for the
-resulting source boundaries. Freeze insertion also clears the curve; merge
-refuses clips with curves. Keeping an aggregate source span is not the same as
-keeping the source moment at each output time.
+The inherited `SplitClips` and freeze paths cleared speed curves and used
+constant means for source boundaries. Keeping an aggregate source span did not
+keep the source moment at each output time. The current
+[source-preserving surgery repair](source-preserving-surgery.md) restricts the
+existing time map and eased keys across split, trim, moving freeze pieces and
+transition pre-roll. Merge still refuses varying-speed clips.
 
-The trim path's constant-speed source shift likewise deserves a curve-fidelity
-check. Do not infer that a valid saved document or successful edit preserved a
-nonlinear time map. A source-preserving interface should preserve that map or
-explicitly reject an unsupported operation before mutation.
+Pure and export-plan regressions exercise those mappings and explicit atomic
+refusals. Do not infer whole-media fidelity from a valid document or these tests:
+microsecond export clocks, stepped audio tempo and caller-supplied freeze stills
+retain separate limits.
 
-Next discriminator: compare resolved source times throughout a nonconstant
-curve before/after split and freeze, then compare actual rendered intervals.
-Include trims, reverse/holds, keyframes, transitions and late source offsets.
-Keep a constant-speed case that must still work.
+Next discriminator: compare actual rendered intervals and audio across the
+tested operations, including boundaries, transitions and source offsets. Keep
+constant-speed controls. The map/plan tests are already present; rendered-media
+equivalence remains a separate check.
 
 ## Multistream reattachment
 

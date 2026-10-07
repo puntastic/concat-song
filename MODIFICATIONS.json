@@ -673,10 +673,10 @@
     "docs/known-engine-limits.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "991c2b5321dcdafcd4fdbe893cfd84a981ae4a69",
+      "git_blob": "c8c3de5f6747ccff8a32c910ee60c233a3b0cc34",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Agent-operated engine foundation: remove conventional GUI, preserve presentation hooks, isolate fork state and record modifications.",
+      "summary": "Preserve retained clip time maps and eased keys through surgery and export planning",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -697,6 +697,16 @@
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
       "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/source-preserving-surgery.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "d4744f396ea14c44139a4bca950bf6dec02dcc68",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Preserve frame-aligned boundaries and source covering frames through paced seeks and recovery",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1150,13 +1160,33 @@
       "upstream_blob": "2daea09f6367efa24f457c928310524bba1b7912",
       "upstream_mode": "100644"
     },
+    "src/crates/concat-core/src/animate.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "50d48944ffcb88db8ff7fcf79567e8d85a36b991",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "88ede256e93a9eb7c48bf70b9d9acb19a5918391",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-core/src/retime.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "7bf4c8ec15d906b0b8f9184009ef57c1a521e9cb",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "238de2b4c5db7db176335be4a146dedf048dec25",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-effects/packages/concat.bloom-pulse/effect.wgsl": {
       "change": "modified",
       "changed_on": "2026-10-07",
       "git_blob": "72cbb682bdb6a7f57bccbc26d2cdc42d8cfbafd1",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "summary": "Integrate qualified software rendering and export diagnostics with paced source-time repair",
       "upstream_blob": "ec7e9f8ede3a86247c11cca598560b1691c0c07f",
       "upstream_mode": "100644"
     },
@@ -1166,7 +1196,7 @@
       "git_blob": "2f01798174f3dc6cfefe0f8b13ec3b2a7e8e62ad",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "summary": "Integrate the qualified headless foundation with source-preserving clip surgery",
       "upstream_blob": "6255e4601312a2c5537953f547c57b0bfa1a42d9",
       "upstream_mode": "100644"
     },
@@ -1176,9 +1206,39 @@
       "git_blob": "560cfb5dfd8b2936d53413b9dc2842876498e20a",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "summary": "Integrate qualified software rendering and export diagnostics with paced source-time repair",
       "upstream_blob": "86c1020a0883a388dcc68b519b88261afd41a61a",
       "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/lib.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "9cc7588aef2827ed450368a90b0aa6a5e4e14ccf",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "03ecf01e20442e016719087be28d3598a3896a08",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/resolve.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "462f40a54a675e30b2b7bd4e72befcfdd6897563",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Retain exact frame-aligned interval endpoints without snapping genuine subframe boundaries",
+      "upstream_blob": "55c44f64374c0aef37c122c60eba5e6f4d86b1ec",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/surgery_tests.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "7a8e54e0e0d6500c797eb3f480adf82075c1bfe7",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Retain exact frame-aligned interval endpoints without snapping genuine subframe boundaries",
+      "upstream_blob": null,
+      "upstream_mode": null
     },
     "src/crates/concat-host/Cargo.toml": {
       "change": "modified",
@@ -1580,6 +1640,16 @@
       "upstream_blob": null,
       "upstream_mode": null
     },
+    "src/crates/concat-media/src/decode.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "70df3a000dde234bae98028cbe54fd1fff03b80f",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve exact frame endpoints and paced covering-frame semantics across seek, EOF and software recovery",
+      "upstream_blob": "3936417c1a6f4e5239649a2e76c623ff71f76282",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-project/src/captions.rs": {
       "change": "added",
       "changed_on": "2026-10-07",
@@ -1590,15 +1660,65 @@
       "upstream_blob": null,
       "upstream_mode": null
     },
+    "src/crates/concat-project/src/commands/clips.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "e76976bbdb86b57a09b670fe8747a8f938bb4e12",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": "dd75582b8190efecc340fdd0ad36ea5ca4a678d7",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/commands/mod.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "6d312166fc3e4f51fc73ce6ab5089b8a25c2f097",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "ea91e32d87d25c518940665e208698e38bcf784f",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-project/src/lib.rs": {
       "change": "modified",
       "changed_on": "2026-10-07",
-      "git_blob": "8826de0b3119e0d1f07e2168af465bd8b0788e17",
+      "git_blob": "31764cd7a45f6724a27301282d912f73ef789681",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
       "upstream_blob": "a9f879e81631a9540ea4b91c4d6085c06b30c1db",
       "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/model.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "0d238942c9b6e770c8de868a969806c87ceaf0f9",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": "884b649d67d3be05acd67ed94c5c0e096b8c4b95",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/speed.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "1d9f88779bbfb1131109cebc31dcc5e9f91b8941",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "a483b68c7d6a633f860bd81ff3ec22c3605b74d6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/tests/surgery.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "d61f7b9237598fd672f97688b8286b8888fa7e2e",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": null,
+      "upstream_mode": null
     },
     "src/crates/concat-render/src/gpu/tests.rs": {
       "change": "modified",
@@ -1606,7 +1726,7 @@
       "git_blob": "5b67d6941bbe981e0bcd52593fc623bfcb52252a",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "summary": "Integrate the qualified headless foundation with source-preserving clip surgery",
       "upstream_blob": "7a831b1e8bddcd4be0ff6df21bc56515d012f7c3",
       "upstream_mode": "100644"
     },
@@ -3112,7 +3232,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "75f48586411123f548b936a908d6467bb3c0ab1a65df7cb8ff1e8724bba7ebcd",
+  "index_sha256": "6d44cffb9135a1cf33083fc582a8ce8fd67e9022d47c19205d091ad37a03ab1f",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,
