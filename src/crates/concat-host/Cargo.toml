@@ -1,14 +1,14 @@
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 [package]
 name = "concat-host"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
-description = "What the editor window needs that is not the edit itself: sessions, project folders, previews, playback, templates."
+description = "Engine services: sessions, project folders, previews, playback, templates and text presets."
 
 [features]
-# The wgpu compositor for previews and exports, off by default for the same
-# reason as everywhere else in the engine; the window turns it on.
+# Compatibility feature forwarding; the retained renderer always builds wgpu.
 gpu = ["concat-export/gpu", "concat-render/gpu"]
 
 [dependencies]
@@ -39,6 +39,8 @@ log = { version = "0.4", features = ["std"] }
 concat-render.workspace = true
 serde = { version = "1", features = ["derive"] }
 serde_json.workspace = true
+# Text presets use the same TOML format as before their engine extraction.
+toml = "1.1"
 
 # Engine-owned audio playback: cpal talks to the output device, memmap2 keeps
 # decoded PCM disk-backed instead of resident.

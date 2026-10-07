@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! The edit itself, owned by the engine.
 //!
@@ -21,6 +22,7 @@
 //! document model needs serde, and concat-core's zero-dependency rule is worth
 //! more than the adjacency.
 
+pub mod captions;
 pub mod commands;
 pub mod doc;
 pub mod editor;

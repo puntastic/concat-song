@@ -1,123 +1,118 @@
-# Contributing to Concat
+<!-- Modified for concat-song on 2026-10-07; see FORK-NOTICE.md. -->
+# Contributing to concat-song
 
-Thanks for being here. Concat is a video editor that runs entirely on the
-user's machine, and it gets better mostly through people using it hard and
-reporting what broke.
+This fork develops the headless editing engine, JSON API, transports, and CLI.
+The upstream Slint editor and Android application have been removed. A future
+presentation layer can call the engine/API; GUI maintenance is not part of the
+current project. Preserve that separation when proposing changes.
 
-## The most valuable thing you can do
+Open an issue in this fork for substantial changes before investing in an
+implementation. Useful reports include the exact revision, OS/architecture,
+command or API requests, native-library versions, expected result, and observed
+result. Share media only when you have permission, and prefer a small synthetic
+reproducer over private footage or project paths.
 
-Grab a build from the [Releases](https://github.com/jub0t/Concat/releases) page
-and edit a real video with it. Real footage finds what no reading of the
-source does. A good bug report — what you did, what happened, your
-OS, the media you used — is worth more than most patches.
+## Build prerequisites
 
-Longer-form discussion lives in
-[the contribution discussion](https://github.com/jub0t/Concat/discussions/3)
-and on [Discord](https://discord.gg/DVuPfpXfqP).
+Read [the engine guide](src/README.md) for crate roles and native dependencies.
+The workspace is under `src/`; `src/rust-toolchain.toml` pins Rust 1.93.
+Keep `Cargo.lock` and use `--locked` for validation. Linux and Windows x86-64
+MSVC are the current native CI targets. Builds need FFmpeg 7+ development
+libraries and libclang; the host also requires ONNX Runtime and Linux ALSA.
+Rendering is GPU-backed even without a window; Mesa lavapipe is used in Linux
+CI. Optional speech adds CMake/C++ and whisper/sherpa native dependencies.
 
-## Before you write code
+The exact CI setup and fixed native-download digests are in
+[engine-native.yml](.github/workflows/engine-native.yml). Fixed URLs and digests
+make input drift fail visibly; they do not guarantee upstream asset retention
+or bit-for-bit builds. Windows ONNX/DirectML acquisition remains the locked
+`ort-sys` crate's responsibility. No Nix package, installer, release upload,
+model publication, or automatic distribution is currently provided.
 
-Open an issue or drop into Discord first for anything beyond a small fix. Large
-areas are already in progress or intentionally deferred, and it is genuinely
-no fun to review a big PR that has to be turned down for reasons that were
-invisible from outside.
-
-## Setting up
-
-You will need Rust (see `rust-version` in `src/Cargo.toml`), the FFmpeg
-7+ development libraries (`brew install ffmpeg`; see `src/README.md` for
-Windows and Linux), cmake and a C++ compiler. Then:
+From a configured environment:
 
 ```sh
-cd src && cargo run -p concat
+cd src
+cargo build --locked -p concat-cli
+cargo run --locked -p concat-cli -- api '{"jsonrpc":"2.0","id":1,"method":"version"}'
 ```
 
-That is the editor window. Everything - the engine, the host layer and the
-Slint UI - is one Cargo workspace under `src/`.
-
-## Layout
-
-| Path | What lives there |
-|---|---|
-| `src/crates/` | The engine (core, media, render, export, project), the host layer (`concat-host`, `concat-speech`), the CLI, and `concat`, the Slint editor window |
-
-[`src/README.md`](src/README.md) explains how the crates fit together and
-where the sharp edges are. Read it before touching the engine.
+Do not point API write roots or export commands at important work while
+developing; use temporary project folders and synthetic media.
 
 ## Checks
 
-Run these before opening a PR:
+Run the headless scope before opening a pull request:
 
 ```sh
-cd src && cargo fmt --check && cargo clippy --all-targets -- -D warnings && cargo test
+cd src
+cargo fmt --all --check
+cargo clippy --locked --workspace --exclude concat-speech --all-targets -- -D warnings
+cargo test --locked --workspace --exclude concat-speech -- --show-output
+cargo clippy --locked -p concat-server -p concat-cli --features grpc --all-targets -- -D warnings
+cargo test --locked -p concat-server --features grpc -- --show-output
+cargo run --locked -p concat-perf --profile quick -- --check --quick
 ```
 
-If you added or changed text the interface shows, also run
-`python3 scripts/locales.py` so the string inventory follows; CI checks it.
-Translations live in one JSON file per language — see
-[`TRANSLATING.md`](TRANSLATING.md).
+CI requires the Linux rendering tests to find an adapter by setting
+`CONCAT_REQUIRE_GPU=1`. On other machines the suite can report adapter or codec
+skips; read them, and do not describe a skipped path as tested. `--show-output`
+keeps those messages visible. The quick performance check excludes the full
+media benchmarking scenarios, which need a controlled machine.
 
-If you added or changed a downloadable model, put it in
-[`models/manifest.toml`](models/manifest.toml) as well as the engine table it
-belongs to, and run `python3 scripts/models.py --check`; CI checks that too.
-A maintainer then runs the *Mirror models* workflow, which fetches the model,
-records its digest in both places and publishes it to the mirror the app
-downloads from.
-
-Write what happens through the `log` facade — `log::info!`, `log::warn!`,
-`log::error!` — rather than to standard output or standard error. Every run
-writes `<app data>/logs/concat-<when>.log`, and a packaged build has no
-terminal for anything that goes anywhere else; `CONCAT_LOG=debug` turns the
-level up. See `src/crates/concat-host/src/logs.rs`.
-
-New source files need a licence header — see below. Match the style of the code
-around you; the engine avoids cleverness on purpose.
-
-## Licensing your contribution
-
-Concat is **AGPL-3.0-or-later** ([`LICENSE`](LICENSE)), with a plugin exception
-so that Concat API plugins can carry their own licence
-([`LICENSE-EXCEPTIONS.md`](LICENSE-EXCEPTIONS.md)).
-
-Contributions are accepted under the CLA in [`CLA.md`](CLA.md). **You keep the
-copyright in your work** — the CLA is a licence, not an assignment. It exists so
-that copyright in Concat stays centralised, which is what makes the AGPL
-enforceable against companies that take the code without honouring it.
-
-Sign off your commits to indicate agreement:
+The native-library-free portability subset remains checked with:
 
 ```sh
-git commit -s -m "your message"
+cargo clippy --locked -p concat-core -p concat-project -p concat-effects -p concat-render -p concat-text --features concat-render/gpu --target wasm32-unknown-unknown -- -D warnings
 ```
 
-Typo and documentation fixes do not need a sign-off.
+Speech remains in the workspace but is excluded explicitly from the routine
+native lane to avoid its heavy dependencies on every engine change. For speech
+changes, run the **Engine CI** workflow manually with `speech` enabled, or use
+the equivalent checks in an environment with its native libraries configured:
 
-### File headers
-
-Every source file starts with:
-
-```rust
-// SPDX-License-Identifier: AGPL-3.0-or-later
-// SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+```sh
+cargo clippy --locked -p concat-speech --all-features --all-targets -- -D warnings
+cargo test --locked -p concat-speech --all-features -- --show-output
 ```
 
-Keep your own copyright line if you want one — add it, don't replace what's
-there.
+That lane includes Chatterbox compilation/tests, not live model inference or
+quality evaluation. Real audio devices, hardware encoders, downloaded model
+weights, and macOS/mobile targets need separate, clearly reported validation.
+The remaining `src/scripts/*-mobile.sh` and `mobile-env.sh` are unvalidated
+engine-dependency utilities, not supported mobile builds or packaging targets.
 
-### Third-party code
+From the repository root, also run:
 
-If your patch brings in code you did not write, say so in the PR: what it is,
-where it came from, and its licence. Anything incompatible with
-AGPL-3.0-or-later cannot be merged, and licence problems are much cheaper to
-catch before a merge than after a release.
+```sh
+python scripts/models.py --check
+python -m unittest discover -s scripts/tests -p 'test_modification_notices.py'
+python scripts/check_modification_notices.py check
+```
 
-## Trademarks
+Model changes must keep `models/manifest.toml` and their Rust tables consistent.
+The read-only check does not download models or establish their availability.
+The explicit `scripts/models.py mirror --out <directory>` utility downloads
+models and may record missing digests in those tables; inspect all resulting
+changes and update modification notices before committing. There is no model
+release publisher in this fork.
 
-The code is free to fork. The Concat name and logo are not covered by the AGPL
-grant — see [`TRADEMARK.md`](TRADEMARK.md). Forks are welcome; please ship them
-under your own name.
+Use the `log` facade for engine diagnostics. CLI/API standard output is a
+machine-readable protocol surface, not a place for incidental diagnostics.
 
-## Conduct
+## Attribution and modification notices
 
-[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) applies to the repo, the Discussions
-and Discord.
+The inherited code remains AGPL-3.0-or-later; retain [LICENSE](LICENSE),
+[LICENSE-EXCEPTIONS.md](LICENSE-EXCEPTIONS.md), and existing attribution. Follow
+[the fork modification process](docs/licensing-process.md), including dated
+notices for changed commentable files and the central modification inventory.
+Keep existing upstream SPDX and copyright lines unchanged; add the fork notice
+after them rather than replacing them. Record third-party origins and licences
+when introducing code or dependencies.
+
+[CLA.md](CLA.md) and [TRADEMARK.md](TRADEMARK.md) are retained upstream records,
+not a claim that this fork is operated by the upstream maintainers. The fork's
+name does not transfer upstream branding or trademark rights. See
+[FORK-NOTICE.md](FORK-NOTICE.md) for the fork's provenance and limits.
+
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) remains the conduct reference.

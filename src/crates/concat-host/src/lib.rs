@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
-//! What the editor window needs that is not the edit itself.
+//! Engine services around the edit itself, independent of a presentation layer.
 //!
 //! The edit lives in `concat-project`, pixels in `concat-render` and
 //! `concat-export`, files in `concat-media`. This crate is the layer the
-//! window talks to: it opens a project folder as a [`session::Session`],
+//! API or other caller talks to: it opens a project folder as a [`session::Session`],
 //! keeps the recents list, caches waveforms and filmstrips beside the
 //! project, composites the paused monitor's true frame, plays the audible
 //! clips, finds the masks behind cutouts, packs templates, and holds the
 //! one-at-a-time slots for long jobs.
 //!
-//! The window calls these functions in-process, and the doctrine is that
+//! Callers use these functions in-process, and the doctrine is that
 //! no editing decision is made here. If a function starts deciding what an
 //! edit means, it belongs in `concat-project`.
 //!
@@ -37,8 +38,8 @@ pub mod record;
 pub mod reverse;
 pub mod session;
 pub mod templates;
+pub mod text_presets;
 pub mod titles;
-pub mod updates;
 
 pub use brush::{Brushes, RegionRequest};
 pub use cutout::{AnalyseRequest, Cutouts};

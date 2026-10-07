@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
-"""The model mirror: the table, the fill, and the manifest a release carries.
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
+"""Model-table consistency and an explicit local download utility.
 
     scripts/models.py --check                 # the table against the engine
     scripts/models.py mirror --out dir        # fill a mirror from upstream
-    scripts/models.py release-manifest \\
-        --version 0.2.1 --tag v0.2.1 \\
-        --bundles dir --out manifest.json     # what a release describes
 
-Concat fetches its cutout networks, its Kokoro voice bank and its whisper
-models on demand rather than carrying them in the bundle. models/manifest.toml
-says what they are and where they come from; this script is what fills the
-mirror from upstream, and what turns the table into the manifest.json every
-release ships beside its bundles. See that file for the shape of a row.
+The engine fetches cutout, speech and whisper models on demand.
+models/manifest.toml records their sources and digests. `--check` is local
+and read-only. `mirror` downloads bytes and records missing digests in the
+manifest and source tables: review that diff and the fork modification
+notices afterwards. This script never uploads or publishes a release.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
-import json
 import pathlib
 import re
 import sys
@@ -46,30 +43,6 @@ TABLES = {
     "chatterbox": CRATES / "concat-speech" / "src" / "chatterbox.rs",
     "whisper": CRATES / "concat-speech" / "src" / "transcribe.rs",
 }
-
-# The bundles a release publishes, as build-app.yml and mobile.yml name
-# them: platform, architecture, the kind of file, and its name with the
-# version to fill in. Installers and binaries, never an archive of a
-# folder - a person downloads the thing they run.
-BUNDLES = [
-    ("macos", "arm64", "dmg", "Concat-{v}-macos-arm64.dmg"),
-    ("macos", "x86_64", "dmg", "Concat-{v}-macos-x86_64.dmg"),
-    ("linux", "x86_64", "deb", "Concat-{v}-linux-x86_64.deb"),
-    ("linux", "x86_64", "rpm", "Concat-{v}-linux-x86_64.rpm"),
-    ("linux", "x86_64", "appimage", "Concat-{v}-x86_64.AppImage"),
-    ("linux", "x86_64", "pacman", "Concat-{v}-linux-x86_64.pkg.tar.zst"),
-    ("linux", "aarch64", "deb", "Concat-{v}-linux-aarch64.deb"),
-    ("linux", "aarch64", "rpm", "Concat-{v}-linux-aarch64.rpm"),
-    ("linux", "aarch64", "appimage", "Concat-{v}-aarch64.AppImage"),
-    ("linux", "aarch64", "pacman", "Concat-{v}-linux-aarch64.pkg.tar.zst"),
-    ("windows", "x86_64", "setup", "Concat-{v}-windows-x86_64-setup.exe"),
-    ("windows", "x86_64", "msi", "Concat-{v}-windows-x86_64.msi"),
-    ("windows", "aarch64", "setup", "Concat-{v}-windows-aarch64-setup.exe"),
-    ("windows", "aarch64", "msi", "Concat-{v}-windows-aarch64.msi"),
-    ("android", "arm64", "apk", "Concat-{v}-android-arm64.apk"),
-    ("ios", "arm64", "ipa", "Concat-{v}-ios-arm64.ipa"),
-]
-
 
 def table() -> dict:
     text = MANIFEST.read_text(encoding="utf-8")
@@ -102,18 +75,6 @@ def table() -> dict:
     return data
 
 
-def hf_mirror(url: str) -> str | None:
-    """`url` through hf-mirror.com, for a Hugging Face URL; None otherwise."""
-    for host in ("https://huggingface.co/", "https://hf.co/"):
-        if url.startswith(host):
-            return "https://hf-mirror.com/" + url[len(host):]
-    return None
-
-
-def asset_url(release: str, file: str) -> str:
-    return f"https://github.com/{REPO}/releases/download/{release}/{file}"
-
-
 def engine_id(model: dict) -> str:
     """What the engine calls this model.
 
@@ -128,14 +89,6 @@ def engine_id(model: dict) -> str:
     if model["family"] == "whisper":
         return file.removeprefix("ggml-").removesuffix(".bin")
     return file
-
-
-def digest(path: pathlib.Path) -> str:
-    sha = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            sha.update(block)
-    return sha.hexdigest()
 
 
 # ── check ────────────────────────────────────────────────────────────────
@@ -217,10 +170,10 @@ def check() -> int:
     total = sum(model.get("bytes", 0) for model in models)
     print(f"{len(models)} models, {total / 1e9:.2f} GB, mirrored on {release}")
     if empty:
-        # Not a failure here, since the mirror workflow runs this check
-        # before it fills a digest in - but the app refuses a download it
-        # cannot check, so a model listed here is unusable until then.
-        print(f"    {len(empty)} awaiting a digest, refused by the app until then: {', '.join(empty)}")
+        # Consistency does not certify downloadable model availability. The
+        # engine refuses a missing digest; the local mirror command can
+        # record one, subject to review, without a publishing workflow.
+        print(f"    {len(empty)} awaiting a digest, refused by the engine until then: {', '.join(empty)}")
     return failed
 
 
@@ -321,69 +274,6 @@ def mirror(out: pathlib.Path, only: list[str]) -> int:
     return failed
 
 
-# ── release manifest ─────────────────────────────────────────────────────
-
-
-def release_manifest(version: str, tag: str, bundles: pathlib.Path | None) -> dict:
-    data = table()
-    release = data["release"]
-
-    # platform -> architecture -> kind -> the file, so a reader asks for
-    # the one it installs with: binaries.linux.x86_64.deb.
-    binaries: dict[str, dict] = {}
-    for platform, arch, kind, stem in BUNDLES:
-        file = stem.format(v=version)
-        entry = {
-            "file": file,
-            "url": asset_url(tag, file),
-        }
-        if bundles is not None:
-            path = bundles / file
-            if path.exists():
-                entry["bytes"] = path.stat().st_size
-                entry["sha256"] = digest(path)
-            else:
-                # A target that did not build is absent rather than a row
-                # promising a file that is not there.
-                continue
-        binaries.setdefault(platform, {}).setdefault(arch, {})[kind] = entry
-
-    models = {}
-    for model in data["model"]:
-        models[model["id"]] = {
-            "family": model["family"],
-            "file": model["file"],
-            "bytes": model["bytes"],
-            "sha256": model["sha256"],
-            "licence": model["licence"],
-            "url": asset_url(release, model["file"]),
-            "upstream": model["upstream"],
-            # Every place the file can be fetched from, best first: the
-            # app's own order, for anything that reads this instead of the
-            # app. hf-mirror.com carries whatever Hugging Face does.
-            "sources": [
-                url
-                for url in [
-                    asset_url(release, model["file"]),
-                    model["upstream"],
-                    hf_mirror(model["upstream"]),
-                ]
-                if url
-            ],
-        }
-
-    return {
-        # 2: a target holds one row per kind of file, not one file.
-        "schema": 2,
-        "product": "Concat",
-        "version": version,
-        "tag": tag,
-        "models_release": release,
-        "binaries": binaries,
-        "models": models,
-    }
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="the table against the engine")
@@ -393,24 +283,9 @@ def main() -> int:
     fill.add_argument("--out", type=pathlib.Path, required=True)
     fill.add_argument("--only", action="append", default=[], help="a family or an id; repeatable")
 
-    emit = sub.add_parser("release-manifest", help="the manifest.json a release carries")
-    emit.add_argument("--version", required=True)
-    emit.add_argument("--tag", required=True)
-    emit.add_argument("--bundles", type=pathlib.Path)
-    emit.add_argument("--out", type=pathlib.Path)
-
     args = parser.parse_args()
     if args.command == "mirror":
         return mirror(args.out, args.only)
-    if args.command == "release-manifest":
-        manifest = release_manifest(args.version, args.tag, args.bundles)
-        text = json.dumps(manifest, indent=2) + "\n"
-        if args.out:
-            args.out.write_text(text, encoding="utf-8")
-            print(f"{args.out}: {len(manifest['binaries'])} platforms, {len(manifest['models'])} models")
-        else:
-            print(text, end="")
-        return 0
     return check()
 
 

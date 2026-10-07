@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Titles as pixels.
 //!
@@ -226,9 +227,8 @@ impl Default for Fonts {
     }
 }
 
-/// The face this build bundles, at the weights the interface uses, so a
-/// title is set in the face the window is on a machine that has never
-/// installed it. The window embeds the same five files (concat/ui/app.slint).
+/// The face this build bundles for titles, available even on a machine
+/// that has never installed it. These five faces belong to the text renderer.
 /// Licensed under the SIL Open Font License; see fonts/LICENSE-HankenGrotesk.txt.
 pub const BUNDLED_FAMILY: &str = "Hanken Grotesk";
 const BUNDLED: [&[u8]; 5] = [

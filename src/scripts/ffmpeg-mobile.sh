@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
+# Retained engine dependency utility, outside the current Linux/Windows CI
+# support boundary. There is no mobile application or packaging target here.
 # Builds FFmpeg's libraries for a phone, from source, as static archives
 # the engine links.
 #
@@ -10,7 +13,7 @@
 # bindings take through FFMPEG_DIR, exactly as they take a Homebrew or
 # BtbN build on the desktop. It lands in vendor/ffmpeg/<target> under the
 # engine by default, outside target/, so a `cargo clean` does not cost
-# another FFmpeg build and CI's cache can keep it.
+# another FFmpeg build. Current CI does not exercise these cross-builds.
 #
 # Android needs the NDK (ANDROID_NDK_HOME, or the newest one under the SDK
 # in ANDROID_HOME / ~/Library/Android/sdk); iOS needs Xcode. Both builds
@@ -25,7 +28,8 @@ workspace=$(cd "$(dirname "$0")/.." && pwd)
 out=${2:-$workspace/vendor/ffmpeg/$target}
 version=${FFMPEG_VERSION:-8.1}
 # Oldest OS each build runs on. Android 8.0 is where AAudio, the audio
-# path the engine plays through, appears; iOS 15 is where Slint draws.
+# path the engine plays through, appears. iOS 15 is the retained baseline,
+# not a claim of current fork compatibility testing.
 android_api=${ANDROID_API:-26}
 ios_min=${IPHONEOS_DEPLOYMENT_TARGET:-15.0}
 jobs=$(getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)

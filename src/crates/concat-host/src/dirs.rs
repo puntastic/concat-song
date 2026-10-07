@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Where the app keeps what belongs to this machine rather than to a
 //! project: the recents list, remembered settings, downloaded models.
@@ -19,8 +20,10 @@
 
 use std::path::{Path, PathBuf};
 
-/// The app identifier, which is also the folder name everywhere.
-pub const IDENTIFIER: &str = "app.concat.editor";
+/// The fork's state namespace, separate from an official Concat installation.
+/// Explicit project paths remain compatible; upstream settings/models are not
+/// silently adopted or moved into this fork.
+pub const IDENTIFIER: &str = "org.puntastic.concat-song";
 
 /// The app's own directories on this machine.
 #[derive(Clone, Debug)]
@@ -94,13 +97,12 @@ impl AppDirs {
 
 /// The folders under `data`, each named where it is made: models, caches
 /// and logs. What is not listed is the settings', and stays in `config`.
-const DATA_FOLDERS: [&str; 7] = [
+const DATA_FOLDERS: [&str; 6] = [
     "cutout-models",  // concat-vision, models.rs
     "whisper-models", // concat-speech, transcribe.rs
     "tts-models",     // concat-speech, tts.rs
-    "cards",          // concat, studio.rs
+    "cards",          // cards.rs
     "titles",         // titles.rs
-    "updates",        // updates.rs
     "logs",           // logs.rs
 ];
 
@@ -144,6 +146,12 @@ fn home() -> Result<PathBuf, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fork_state_does_not_use_the_upstream_namespace() {
+        assert_eq!(IDENTIFIER, "org.puntastic.concat-song");
+        assert_ne!(IDENTIFIER, "app.concat.editor");
+    }
 
     #[test]
     fn the_directories_are_named_by_the_identifier() {
