@@ -17,7 +17,7 @@ clamping the result. The affected commands stage both project state and minted
 IDs before publication. Preview/export planning exposes timing-representation
 errors; an invalid preview plan does not quietly become a valid empty scene.
 
-## Two joins checked during receiver review
+## Boundary joins checked during review and execution
 
 - Export rationalizes **absolute start and end**, then derives their difference.
   Independently rounding start and duration created a hole containing an output
@@ -30,17 +30,30 @@ errors; an invalid preview plan does not quietly become a valid empty scene.
   and protect the repair. Nearby distinct keys are not collapsed using the
   interactive key-selection tolerance; conflicting boundary values are refused
   atomically.
+- The broader rendered suite exposed a one-frame tail disappearing after
+  microsecond rounding. Genuinely frame-aligned timeline endpoints now retain
+  their exact frame rational, with only floating-arithmetic residue tolerated;
+  genuine subframe boundaries remain independent of the output grid.
+- Paced decoding needs the source frame whose presentation interval covers the
+  requested time. Its seek and software-recovery paths now retain the preceding
+  frame for that selection. Unpaced reads remain at-or-after. EOF uses declared
+  source-frame duration, then stream end; if both are absent, the last observed
+  source cadence is an explicit fallback, not an output-rate-derived hold.
 
 ## Evidence and remaining limits
 
 Focused checks cover constant/nonlinear maps, interior sampling, discontinuities,
 endpoint extension, eased/overshooting keys, trim/split/freeze, transition
 pre-roll, source offsets, rational-boundary ownership, merge, undo and refusals.
-These are code/plan tests, not proof that every rendered image or audio sample
-matches a previous render.
+CPU decoder controls also cover differing source/output rates and recovery
+before the first frame and after progress. The unchanged end-to-end export edge
+test passes. These checks are not proof that every rendered image or audio
+sample matches a previous render, and no hardware fault was physically induced.
 
-- Export clocks retain **microsecond rationalization**, not arbitrary `f64`
-  timestamp equality. Source/key tolerances are case-specific in the tests.
+- Genuinely frame-aligned timeline endpoints remain exact frame rationals;
+  other endpoints and source positions retain **microsecond rationalization**,
+  not arbitrary `f64` timestamp equality. Source in-points are never snapped to
+  output FPS. Source/key tolerances are case-specific in the tests.
 - Audio tempo remains a stepped approximation; gain shape and each piece's
   source start are checked separately from sample-for-sample sound identity.
 - The caller must supply a freeze still depicting the intended source moment.
@@ -51,3 +64,5 @@ matches a previous render.
   claimed. Multistream reattachment is a separate, unrepaired limitation.
 - No sync-group, document schema, model inference or creator-preference system
   is introduced by this repair.
+- Missing source-duration metadata retains the documented cadence fallback;
+  this is not a general variable-frame-rate fidelity guarantee.

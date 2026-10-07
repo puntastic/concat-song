@@ -7,9 +7,10 @@
 //! `flatten` turns the document into `ExportClip`s; this turns those into
 //! a `concat_core::Timeline` plus the per-clip facts the decoders and the
 //! compositor need that the engine's model has no field for. It is the
-//! one place document times become rational seconds. Clip spans and source
-//! positions retain subframe offsets; only output sampling and frame-shaped
-//! transition ramps use the output frame grid.
+//! one place document times become rational seconds. Frame-aligned clip
+//! endpoints remain exact frame rationals; genuinely subframe endpoints and
+//! source positions retain microsecond precision. Output sampling and
+//! frame-shaped transition ramps use the output frame grid.
 //! Every chain, pass, size and mask
 //! a clip renders with is decided here. `render` and the preview read
 //! what this builds and never look at an `ExportClip` again.
@@ -229,12 +230,13 @@ pub(crate) fn build_timeline(
         // Quantize the two absolute endpoints, never start and length
         // independently. Adjacent pieces then share one half-open boundary,
         // including when that boundary lies beside an output frame instant.
-        // Source and key curves use this same rational span. Their clocks
-        // still have microsecond precision, not arbitrary f64 equality.
-        let start = endpoint_time(clip.start).ok_or_else(|| {
+        // Genuine frame-aligned endpoints retain their exact frame rational;
+        // otherwise the shared microsecond boundary owns the interval.
+        // Source/key curves use that same span, not arbitrary f64 equality.
+        let start = endpoint_time(clip.start, rate).ok_or_else(|| {
             "The clip start cannot be represented as nonnegative rational seconds.".to_owned()
         })?;
-        let end = endpoint_time(clip.start + clip.duration).ok_or_else(|| {
+        let end = endpoint_time(clip.start + clip.duration, rate).ok_or_else(|| {
             "The clip end cannot be represented as nonnegative rational seconds.".to_owned()
         })?;
         let duration = end - start;
@@ -465,16 +467,29 @@ pub(crate) fn quantise(seconds: f64, rate: FrameRate) -> Rational {
     rate.time_of_frame((seconds * rate.fps().as_f64()).round().max(0.0) as i64)
 }
 
-/// One absolute endpoint on the microsecond clock. Canonicalize floating
-/// arithmetic residue at half-tick ties, so `start + (cut - start)` and
-/// `cut` do not choose opposite sides of the same represented boundary.
-pub(crate) fn endpoint_time(seconds: f64) -> Option<Rational> {
+/// One absolute endpoint: exact frame time when the input differs only by
+/// floating arithmetic residue, otherwise the shared microsecond clock.
+/// Never use a fraction-of-frame or microsecond tolerance to claim alignment.
+/// Half-microsecond ties likewise ignore only floating arithmetic residue,
+/// so `start + (cut - start)` and `cut` choose the same represented boundary.
+pub(crate) fn endpoint_time(seconds: f64, rate: FrameRate) -> Option<Rational> {
     if !seconds.is_finite() || seconds < 0.0 {
         return None;
     }
     let mut ticks = seconds * 1_000_000.0;
     if !ticks.is_finite() || ticks >= i64::MAX as f64 {
         return None;
+    }
+    let frames = seconds * rate.fps().as_f64();
+    let nearest = frames.round();
+    if frames.is_finite()
+        && nearest < i64::MAX as f64
+        && (frames - nearest).abs() <= 4.0 * f64::EPSILON * frames.abs().max(1.0)
+    {
+        return Rational::checked_new(
+            (nearest as i128) * i128::from(rate.fps().denominator()),
+            i128::from(rate.fps().numerator()),
+        );
     }
     let half = (ticks - 0.5).round() + 0.5;
     if (ticks - half).abs() <= 4.0 * f64::EPSILON * ticks.abs().max(1.0) {

@@ -194,9 +194,58 @@ fn surgery_absolute_endpoint_ties_ignore_only_floating_arithmetic_residue() {
         f64::from_bits(cut.to_bits() - 1),
         f64::from_bits(cut.to_bits() + 1),
     ] {
-        assert_eq!(resolve::endpoint_time(value), Some(expected));
+        assert_eq!(
+            resolve::endpoint_time(value, FrameRate::THIRTY),
+            Some(expected)
+        );
     }
-    assert_ne!(resolve::endpoint_time(cut - 0.0000001), Some(expected));
+    assert_ne!(
+        resolve::endpoint_time(cut - 0.0000001, FrameRate::THIRTY),
+        Some(expected)
+    );
+}
+
+#[test]
+fn surgery_one_frame_at_the_end_keeps_exact_frame_boundary_ownership() {
+    for (num, den) in [(24, 1), (30, 1), (60, 1), (24_000, 1001), (30_000, 1001)] {
+        let rate = FrameRate::checked(num, den).unwrap();
+        let end = rate.time_of_frame(120).as_f64();
+        // At 30fps this is the rendered regression's exact trim arithmetic:
+        // 4 - 1/30, not a rounded decimal approximation to that timestamp.
+        let start = end - rate.time_of_frame(1).as_f64();
+        let last = clip(start, end - start, start);
+        let plan = preview_plan(&[last], 64, 64, num, den, ColorSpace::Sdr);
+        let timeline = &plan.built.as_ref().unwrap().timeline;
+        assert!(
+            plan_frame(timeline, rate.time_of_frame(118))
+                .layers
+                .is_empty()
+        );
+        assert_eq!(
+            plan_frame(timeline, rate.time_of_frame(119)).layers.len(),
+            1,
+            "the last intended frame disappeared at {num}/{den}fps"
+        );
+        assert!(
+            plan_frame(timeline, rate.time_of_frame(120))
+                .layers
+                .is_empty()
+        );
+        let boundary = rate.time_of_frame(119);
+        let value = boundary.as_f64();
+        for residue in [
+            value,
+            f64::from_bits(value.to_bits() - 1),
+            f64::from_bits(value.to_bits() + 1),
+        ] {
+            assert_eq!(resolve::endpoint_time(residue, rate), Some(boundary));
+        }
+        assert_ne!(
+            resolve::endpoint_time(value + 1e-8, rate),
+            Some(boundary),
+            "a real subframe offset must not be called frame aligned"
+        );
+    }
 }
 
 #[test]

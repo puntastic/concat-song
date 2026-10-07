@@ -703,10 +703,10 @@
     "docs/source-preserving-surgery.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "0b87d7cbb3f77d17b2c28fe1c82268a3ed57ea43",
+      "git_blob": "d4744f396ea14c44139a4bca950bf6dec02dcc68",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Preserve retained clip time maps and eased keys through surgery and export planning",
+      "summary": "Preserve frame-aligned boundaries and source covering frames through paced seeks and recovery",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1203,20 +1203,20 @@
     "src/crates/concat-export/src/resolve.rs": {
       "change": "modified",
       "changed_on": "2026-10-07",
-      "git_blob": "99304f3b6dc3cddab2bc90ad42c57aea4e9c70ab",
+      "git_blob": "462f40a54a675e30b2b7bd4e72befcfdd6897563",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "summary": "Retain exact frame-aligned interval endpoints without snapping genuine subframe boundaries",
       "upstream_blob": "55c44f64374c0aef37c122c60eba5e6f4d86b1ec",
       "upstream_mode": "100644"
     },
     "src/crates/concat-export/src/surgery_tests.rs": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "e96d38defdb105dffef3b5c3b0963e590e6878c4",
+      "git_blob": "7a8e54e0e0d6500c797eb3f480adf82075c1bfe7",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "summary": "Retain exact frame-aligned interval endpoints without snapping genuine subframe boundaries",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1609,6 +1609,16 @@
       "summary": "Agent-only engine/API foundation and fork modification-notice process",
       "upstream_blob": null,
       "upstream_mode": null
+    },
+    "src/crates/concat-media/src/decode.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "70df3a000dde234bae98028cbe54fd1fff03b80f",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve exact frame endpoints and paced covering-frame semantics across seek, EOF and software recovery",
+      "upstream_blob": "3936417c1a6f4e5239649a2e76c623ff71f76282",
+      "upstream_mode": "100644"
     },
     "src/crates/concat-project/src/captions.rs": {
       "change": "added",
@@ -3192,7 +3202,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "1ea4c6fd405db4eb033b43b8829ea1d81ea5047295276c62ab8a88c76a871b9b",
+  "index_sha256": "0a0dd608616c1c53a126fc053421086d4926b27017b20457438db4238034474c",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,
