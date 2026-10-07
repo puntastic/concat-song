@@ -1,3 +1,4 @@
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 struct Params { radius: f32 }
 
 // A Gaussian of sigma `radius` of the layer's pixels, in three passes:
@@ -67,7 +68,11 @@ fn across(uv: vec2<f32>) -> vec4<f32> {
 
 /// `across` weighed down its column about `uv`, in its own pixels.
 fn column(uv: vec2<f32>) -> vec4<f32> {
-    let rows = 1.0 / across_texel().y;
+    // `across` is never shrunk vertically (see effect.toml), so its height
+    // is the frame's. Use that uniform for the loop-bound calculation:
+    // querying the texture here stalled WARP with odd intermediate sizes.
+    // Keep the reciprocal arithmetic, samples and weights unchanged.
+    let rows = 1.0 / (1.0 / frame.size.y);
     let s = sigma() * rows / frame.size.y;
     let centre = uv.y * rows;
     let first = floor(centre - REACH * s - 0.5) + 0.5;

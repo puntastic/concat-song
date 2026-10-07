@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
+# Retained engine dependency utility, outside the current Linux/Windows CI
+# support boundary. This does not build, sign, or package a mobile app.
 # Fetches the sherpa-onnx runtime libraries for a phone: the shared
 # libraries k2-fsa publishes, which the app carries with it.
 #
@@ -11,8 +14,7 @@
 # Android: vendor/sherpa-onnx/jniLibs/<abi>/*.so, the layout an APK's
 # native library directory takes, with the NDK's libc++_shared.so beside
 # them because onnxruntime loads it. Point SHERPA_ONNX_LIB_DIR at the ABI
-# directory to build, and cargo-apk packages the whole tree through
-# concat-android's manifest.
+# directory for an independently configured engine cross-build.
 #
 # iOS: vendor/sherpa-onnx/ios/sherpa-onnx.xcframework, the framework the
 # app bundle embeds; SHERPA_ONNX_LIB_DIR is its device slice.

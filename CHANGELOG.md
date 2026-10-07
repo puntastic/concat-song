@@ -1,11 +1,25 @@
 # Changelog
 
-What changed in each release, written for the person using the app and
-grouped by where they will notice it. A release's notes on GitHub are its
-section here: `.github/release-notes.sh` takes the `## <version>` section
-for the tag being released, and falls back to the commit subjects for a
-release that has none. Releases before 0.2.5 have their notes on the
-releases page only: https://github.com/jub0t/Concat/releases
+Modified for concat-song on **2026-10-07**; see [FORK-NOTICE.md](FORK-NOTICE.md).
+Entries below the fork section are retained upstream history, not features
+or releases promised by this engine-only fork.
+
+## concat-song foundation — unreleased — 2026-10-07
+
+- Remove conventional graphical/mobile applications, GUI-only dependencies,
+  installers, branding assets, updater and release automation.
+- Preserve media/rendering/edit capabilities; extract title presets and caption
+  construction into non-GUI libraries.
+- Retain and document engine/API seams for future presentation.
+- Add dated modification accounting and checked preservation of notices.
+- Use a distinct fork state directory without migrating upstream app data.
+- Focus CI on headless behavior, with optional speech coverage made explicit.
+
+No fork binary release or production editing qualification is implied.
+
+## Upstream history
+
+Earlier upstream releases: https://github.com/jub0t/Concat/releases
 
 ## 0.2.6 — 2026-10-04
 

@@ -1,0 +1,255 @@
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
+name: Native engine checks
+
+# Reusable validation only. The caller explicitly opts into speech; no releases.
+on:
+  workflow_call:
+    inputs:
+      speech:
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_PROFILE_DEV_DEBUG: '0'
+  # Fixed assets plus digests, never the mutable /latest endpoint. Upstream
+  # retention is not guaranteed: an unavailable pin must fail, not drift.
+  FFMPEG_RELEASE: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-10-06-13-06
+  FFMPEG_STEM: ffmpeg-n8.1.3-14-g330caae0c1
+  FFMPEG_LINUX_SHA256: a6d0ea7dfef6ef85d86b8acf1c0a2d5288a05bac42c2cb16914e26830da3d344
+  FFMPEG_WINDOWS_SHA256: 751c56e0b63426426487ab4048031b0166281c59c0a7e33ef7dd7428495e1d8a
+  # Match the libclang input used by the successful local MSVC check.
+  # This wheel is extracted only; no pip install or runner-wide LLVM change.
+  LIBCLANG_WINDOWS_URL: https://files.pythonhosted.org/packages/0b/2d/3f480b1e1d31eb3d6de5e3ef641954e5c67430d5ac93b7fa7e07589576c7/libclang-18.1.1-py2.py3-none-win_amd64.whl
+  LIBCLANG_WINDOWS_SHA256: 4dd2d3b82fab35e2bf9ca717d7b63ac990a3519c7e312f19fa8e86dcc712f7fb
+  ORT_VERSION: 1.28.0
+  ORT_LINUX_SHA256: a3e1b79d7bb1bf09696ce675f49e4064e6c81f6202b8225624fff0e93f8d6407
+  SHERPA_VERSION: 1.13.7
+  SHERPA_LINUX_SHA256: d1be7a69ac2b30120058d8302e624239a3064085383cfa47994a14fdc44c32d6
+  GGML_NATIVE: 'OFF'
+
+jobs:
+  native:
+    name: ${{ inputs.speech && 'Speech' || 'Engine/API/CLI' }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ${{ fromJSON(inputs.speech && '["ubuntu-24.04"]' || '["ubuntu-24.04", "windows-2022"]') }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@1.93.0
+        with:
+          components: clippy
+          # Windows intentionally exercises MSVC, never GNU/MinGW.
+          targets: ${{ runner.os == 'Windows' && 'x86_64-pc-windows-msvc' || 'x86_64-unknown-linux-gnu' }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src
+          key: native-${{ runner.os }}-${{ inputs.speech }}-1.93.0${{ runner.os == 'Windows' && '-libclang18.1.1' || '' }}
+          # Retain valid dependencies after a diagnostic step fails. A hard
+          # cancellation can still prevent the action's post-save from running.
+          cache-on-failure: true
+
+      - name: Linux native libraries and software GPU
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libclang-dev cmake pkg-config libvulkan1 mesa-vulkan-drivers
+          mkdir -p "$RUNNER_TEMP/xdg-runtime"
+          chmod 700 "$RUNNER_TEMP/xdg-runtime"
+          {
+            echo "XDG_RUNTIME_DIR=$RUNNER_TEMP/xdg-runtime"
+            echo 'CONCAT_REQUIRE_GPU=1'
+            echo 'WGPU_BACKEND=vulkan'
+          } >> "$GITHUB_ENV"
+          curl -fsSL --retry 3 --retry-all-errors -o ffmpeg.tar.xz \
+            "$FFMPEG_RELEASE/$FFMPEG_STEM-linux64-gpl-shared-8.1.tar.xz"
+          echo "$FFMPEG_LINUX_SHA256  ffmpeg.tar.xz" | sha256sum -c -
+          mkdir ffmpeg-dev
+          tar -xf ffmpeg.tar.xz -C ffmpeg-dev --strip-components=1
+          echo "FFMPEG_DIR=$PWD/ffmpeg-dev" >> "$GITHUB_ENV"
+
+      - name: Linux ONNX Runtime
+        if: runner.os == 'Linux'
+        run: |
+          set -euo pipefail
+          stem="onnxruntime-linux-x64-$ORT_VERSION"
+          curl -fsSL --retry 3 --retry-all-errors -o onnxruntime.tgz \
+            "https://github.com/microsoft/onnxruntime/releases/download/v$ORT_VERSION/$stem.tgz"
+          echo "$ORT_LINUX_SHA256  onnxruntime.tgz" | sha256sum -c -
+          tar -xzf onnxruntime.tgz
+          test -f "$stem/lib/libonnxruntime.so.$ORT_VERSION"
+          ln -sf "libonnxruntime.so.$ORT_VERSION" "$stem/lib/libonnxruntime.so"
+          {
+            echo "ORT_LIB_LOCATION=$PWD/$stem/lib"
+            echo 'ORT_PREFER_DYNAMIC_LINK=1'
+            echo "LD_LIBRARY_PATH=$PWD/ffmpeg-dev/lib:$PWD/$stem/lib"
+          } >> "$GITHUB_ENV"
+
+      - name: Windows FFmpeg and pinned libclang
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          # The first CI run overflowed ffmpeg-sys's build-script main-thread
+          # stack with runner LLVM 20.1.8. Align this one input with the local
+          # passing build before changing stack sizes or any test behavior.
+          curl.exe -fsSL --retry 3 --retry-all-errors -o libclang.whl "$env:LIBCLANG_WINDOWS_URL"
+          if ($LASTEXITCODE -ne 0) { throw 'libclang download failed' }
+          if ((Get-FileHash libclang.whl -Algorithm SHA256).Hash.ToLowerInvariant() -ne $env:LIBCLANG_WINDOWS_SHA256) {
+            throw 'libclang digest mismatch'
+          }
+          python -m zipfile -e libclang.whl libclang-dev
+          if ($LASTEXITCODE -ne 0) { throw 'libclang extraction failed' }
+          $libclang = Join-Path $PWD 'libclang-dev\libclang-18.1.1.data\platlib\clang\native'
+          if (-not (Test-Path "$libclang\libclang.dll")) { throw 'Unexpected libclang wheel layout' }
+          "LIBCLANG_PATH=$libclang" | Out-File -FilePath $env:GITHUB_ENV -Append
+          curl.exe -fsSL --retry 3 --retry-all-errors -o ffmpeg.zip "$env:FFMPEG_RELEASE/$env:FFMPEG_STEM-win64-gpl-shared-8.1.zip"
+          if ($LASTEXITCODE -ne 0) { throw 'FFmpeg download failed' }
+          if ((Get-FileHash ffmpeg.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $env:FFMPEG_WINDOWS_SHA256) {
+            throw 'FFmpeg digest mismatch'
+          }
+          Expand-Archive ffmpeg.zip -DestinationPath ffmpeg-dev
+          $dirs = @(Get-ChildItem ffmpeg-dev -Directory)
+          if ($dirs.Count -ne 1) { throw 'Unexpected FFmpeg archive layout' }
+          "FFMPEG_DIR=$($dirs[0].FullName)" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "$($dirs[0].FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+          # ort-sys resolves its Windows DirectML build from the locked crate;
+          # the Linux CPU archive is not a substitute for that provider.
+
+      - name: Optional speech native libraries
+        if: inputs.speech
+        run: |
+          set -euo pipefail
+          python3 -c 'import os, tomllib; p=tomllib.load(open("src/Cargo.lock", "rb"))["package"]; assert next(x["version"] for x in p if x["name"] == "sherpa-onnx-sys") == os.environ["SHERPA_VERSION"], "Update the sherpa pin and digest with Cargo.lock"'
+          stem="sherpa-onnx-v$SHERPA_VERSION-linux-x64-static-lib"
+          curl -fsSL --retry 3 --retry-all-errors -o sherpa.tar.bz2 \
+            "https://github.com/k2-fsa/sherpa-onnx/releases/download/v$SHERPA_VERSION/$stem.tar.bz2"
+          echo "$SHERPA_LINUX_SHA256  sherpa.tar.bz2" | sha256sum -c -
+          mkdir sherpa
+          tar -xjf sherpa.tar.bz2 -C sherpa
+          test -d "sherpa/$stem/lib"
+          echo "SHERPA_ONNX_LIB_DIR=$PWD/sherpa/$stem/lib" >> "$GITHUB_ENV"
+
+      - name: Lint selected scope
+        working-directory: src
+        run: |
+          set -euo pipefail
+          if [ '${{ inputs.speech }}' = true ]; then
+            scope=(-p concat-speech --all-features)
+          else
+            scope=(--workspace --exclude concat-speech)
+          fi
+          cargo clippy --locked "${scope[@]}" --all-targets -- -D warnings
+
+      - name: Windows effect-card preflight (one required GPU test)
+        id: windows_cards
+        if: runner.os == 'Windows' && !inputs.speech
+        timeout-minutes: 15
+        working-directory: src
+        env:
+          CONCAT_REQUIRE_GPU: '1'
+        run: |
+          set -euo pipefail
+          # Default backend, live per-card diagnostics, and a bounded step.
+          # The 15-minute budget includes any cold test compilation.
+          cargo test --locked -p concat-host --lib -j 1 \
+            cards::tests::every_card_draws_and_shows_its_package_at_work \
+            -- --exact --nocapture --color never 2>&1 | tee "$RUNNER_TEMP/windows-cards.log"
+          grep -Eq '^test result: ok\. 1 passed; 0 failed; 0 ignored;' "$RUNNER_TEMP/windows-cards.log"
+          if grep -Ei 'no usable GPU adapter|skipping|skipped' "$RUNNER_TEMP/windows-cards.log"; then
+            echo 'The required effect-card preflight reported a skip.' >&2
+            exit 1
+          fi
+          echo 'verified=true' >> "$GITHUB_OUTPUT"
+
+      - name: Test selected scope and expose skip messages
+        if: runner.os != 'Windows' || inputs.speech
+        working-directory: src
+        run: |
+          set -euo pipefail
+          if [ '${{ inputs.speech }}' = true ]; then
+            scope=(-p concat-speech --all-features)
+          else
+            scope=(--workspace --exclude concat-speech)
+          fi
+          cargo test --locked "${scope[@]}" -j 1 -- --show-output 2>&1 | tee "$RUNNER_TEMP/engine-tests.log"
+
+      - name: Windows remaining engine tests (card test already verified)
+        id: windows_suite
+        if: runner.os == 'Windows' && !inputs.speech
+        working-directory: src
+        env:
+          CARD_PREFLIGHT_VERIFIED: ${{ steps.windows_cards.outputs.verified }}
+          CONCAT_REQUIRE_GPU: '1'
+        run: |
+          set -euo pipefail
+          # Never turn a failed, timed-out, missing, or empty preflight into
+          # a passing workspace run. Only this already-passed test is filtered.
+          test "$CARD_PREFLIGHT_VERIFIED" = true
+          cargo test --locked --workspace --exclude concat-speech -j 1 -- --nocapture \
+            --skip cards::tests::every_card_draws_and_shows_its_package_at_work \
+            2>&1 | tee "$RUNNER_TEMP/engine-tests.log"
+
+      - name: gRPC transport and CLI
+        if: '!inputs.speech'
+        working-directory: src
+        run: |
+          set -euo pipefail
+          cargo clippy --locked -p concat-server -p concat-cli --features grpc --all-targets -- -D warnings
+          cargo test --locked -p concat-server --features grpc -- --show-output 2>&1 | tee "$RUNNER_TEMP/grpc-tests.log"
+          cargo run --locked -p concat-cli -- api '{"jsonrpc":"2.0","id":1,"method":"version"}' > "$RUNNER_TEMP/api-version.json"
+          python -c 'import json, os; r=json.load(open(os.path.join(os.environ["RUNNER_TEMP"], "api-version.json"))); assert r.get("id") == 1 and "result" in r and "error" not in r, r'
+
+      - name: Quick performance budgets
+        if: runner.os == 'Linux' && !inputs.speech
+        working-directory: src
+        run: cargo run --locked -p concat-perf --profile quick -- --check --quick
+
+      - name: Report observed skips
+        if: always()
+        env:
+          SPEECH_SCOPE: ${{ inputs.speech }}
+          CARD_PREFLIGHT_OUTCOME: ${{ steps.windows_cards.outcome }}
+          CARD_PREFLIGHT_VERIFIED: ${{ steps.windows_cards.outputs.verified }}
+          WINDOWS_SUITE_OUTCOME: ${{ steps.windows_suite.outcome }}
+        run: |
+          {
+            echo '### Native test skips and limits'
+            echo 'Tests print captured output, including adapter/codec skips. A passing suite is not hardware coverage.'
+            if [ "$RUNNER_OS" = Windows ] && [ "$SPEECH_SCOPE" != true ]; then
+              echo "- Required one-test GPU card preflight: $CARD_PREFLIGHT_OUTCOME; verified: ${CARD_PREFLIGHT_VERIFIED:-false}."
+              echo "- Remaining Windows workspace suite: $WINDOWS_SUITE_OUTCOME."
+              echo '- The remainder filters only cards::tests::every_card_draws_and_shows_its_package_at_work after its preflight succeeds; this is coverage partition, not a missing test.'
+              echo '- The preflight uses the default graphics backend and a 15-minute budget including compilation. A timeout/failure leaves coverage incomplete; it does not permit the remainder to run.'
+              if [ "$CARD_PREFLIGHT_VERIFIED" != true ] && [ -f "$RUNNER_TEMP/windows-cards.log" ]; then
+                echo '#### Last card-preflight output (partial, not completion evidence)'
+                echo '```text'
+                tail -n 25 "$RUNNER_TEMP/windows-cards.log"
+                echo '```'
+              fi
+            fi
+            echo '- Cancellation can truncate logs, this summary, and dependency-cache saving; absent completion is not a pass.'
+            found=false
+            for log in "$RUNNER_TEMP/windows-cards.log" "$RUNNER_TEMP/engine-tests.log" "$RUNNER_TEMP/grpc-tests.log"; do
+              if [ -f "$log" ]; then
+                found=true
+                echo "#### $(basename "$log")"
+                echo '```text'
+                grep -Ei 'skipped|skipping|[1-9][0-9]* ignored' "$log" || echo 'No explicit skip message observed.'
+                echo '```'
+              fi
+            done
+            if [ "$found" = false ]; then
+              echo 'No test log produced: setup or linting did not reach the test step.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

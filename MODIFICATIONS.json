@@ -1,0 +1,3122 @@
+{
+  "entries": {
+    ".claude/skills/run-concat/SKILL.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "adbf82e32da5e2a43a11bae39b2ce8a922078dae",
+      "upstream_mode": "100644"
+    },
+    ".github/ISSUE_TEMPLATE/bug_report.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "082723ff36288c2f1ba6f3b2e743594b288b9ff8",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "dd84ea7824f11be1eeda22377549cbc1aec7f980",
+      "upstream_mode": "100644"
+    },
+    ".github/release-notes.sh": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "46ca5bf46df0f43ea0b0ebfd95a368b0191bb8f1",
+      "upstream_mode": "100755"
+    },
+    ".github/workflows/build-app.yml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "79bbef97f895632e1039b35e649420dac1f7679b",
+      "upstream_mode": "100644"
+    },
+    ".github/workflows/ci.yml": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "69db40c5b48e91ddd7896b2ec2ce22a78570105b",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "473a9ec31ce61767006194e9afcb213dd7cb7c90",
+      "upstream_mode": "100644"
+    },
+    ".github/workflows/engine-native.yml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "e494512ce402d0fcd3f4072b0658fc3751e897c4",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    ".github/workflows/mobile.yml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ab1bec21ae3fc51a20a79d635d343091ddaae566",
+      "upstream_mode": "100644"
+    },
+    ".github/workflows/models.yml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c40f55292b1dfc8a2ae479fe69b9dce4d175b898",
+      "upstream_mode": "100644"
+    },
+    ".github/workflows/nix.yml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "57ae1a0c4a01424f36c03ba68bdf5a7e96f922bc",
+      "upstream_mode": "100644"
+    },
+    ".github/workflows/release.yml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "407f5701f713dbac92b1d7a9b07a0c59f98315bf",
+      "upstream_mode": "100644"
+    },
+    "AGENTS.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "dd667517648e5eb274fb2762b5795a12f6305d3e",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "ARCHITECTURE.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "1c2aa59f807c991df88f9b90a1ce23f2d89ddbd5",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e734b76fcd51499a9ef3dcae2b50dbb66f4449af",
+      "upstream_mode": "100644"
+    },
+    "CHANGELOG.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "9a63d3669a08b3d6d0d7de88f1a113d661425f91",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "af0154535c8a627c8b202ff63cc52664d6f0e81d",
+      "upstream_mode": "100644"
+    },
+    "CONTRIBUTING.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "05973a2c2cc103244de91da2bd16f984c26c8c1e",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "85a032d03bbc89bf7b604fc207b8e5b8982cbac8",
+      "upstream_mode": "100644"
+    },
+    "FORK-NOTICE.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "0b6221a7de76afe0d354f8d70973ac6ebe63e67c",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "MODIFICATIONS.json": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": "100644",
+      "notice": "central:index",
+      "summary": "Update the dated fork modification index.",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "README.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "456a24e12de0f69cdd6af44dd0abcbfb87e7012a",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-operated engine foundation: remove conventional GUI, preserve presentation hooks, isolate fork state and record modifications.",
+      "upstream_blob": "ad090031e9c09dced1e877c99a215024e9159306",
+      "upstream_mode": "100644"
+    },
+    "TRANSLATING.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e53e5f53b5863147b34e8cb720f9a525f33b4ada",
+      "upstream_mode": "100644"
+    },
+    "assets/arch/PKGBUILD": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "16d683a5d9acd2f0829be78be45e251887d6aab7",
+      "upstream_mode": "100644"
+    },
+    "assets/concat-mark.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "ac83791d54d3bc6d7afb0e8a47053391f5f77bb6",
+      "upstream_mode": "100644"
+    },
+    "assets/concat_logo.af": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "d26f9ce42dda189539a6171c10f4f6eec15bb96b",
+      "upstream_mode": "100644"
+    },
+    "assets/concat_logo_512.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "ac83791d54d3bc6d7afb0e8a47053391f5f77bb6",
+      "upstream_mode": "100644"
+    },
+    "assets/concat_logo_draft.af": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "bb85f1749c54862a6797e81b2f9abc1dbd325aa2",
+      "upstream_mode": "100644"
+    },
+    "assets/download_button.svg": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e1b3ba89fcd9201b03bf62160664e1eb9015b999",
+      "upstream_mode": "100644"
+    },
+    "assets/editor-dark.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "39be026e5b007f2e6838ac0abd988bcd15d02131",
+      "upstream_mode": "100644"
+    },
+    "assets/editor-light.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "1b22b05d2b4334f24b35952a0ceea6f10612ed68",
+      "upstream_mode": "100644"
+    },
+    "assets/editor.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "cdf0af497d4f6e9f3f48193ab9d66fe4f82041a3",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat.ico": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "da4a94b8384c9f3d186a8b2022316ba1733efa7e",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_128.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "38132f22b5f81baa0cb8e9bf32d7c30fb1793114",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_16.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "9e47759f706db97796e2c1034c98012140d1bf3a",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_256.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e19690e60b0623c1286deea20dc6754fd7ae4037",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_32.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "1a1cd16398b81a3bceb514f9c49c84adf64fa849",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_512.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "ac83791d54d3bc6d7afb0e8a47053391f5f77bb6",
+      "upstream_mode": "100644"
+    },
+    "assets/icons/concat_logo_64.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "93df5b939c2ba9f7b0a143a9df59d74c9d300c16",
+      "upstream_mode": "100644"
+    },
+    "assets/linux/nfpm.yaml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "850644ae0734ef1a464e07de0a461e74ac6fe252",
+      "upstream_mode": "100644"
+    },
+    "assets/new_concat_logo_512_dark_theme_rounded.svg": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "9bf2288d3fa8541f1ba371e7f9879bfa7d262794",
+      "upstream_mode": "100644"
+    },
+    "assets/new_concat_logo_512_rounded_light_theme.svg": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "f24731b811a11304d62a42bb7640b13363bd772d",
+      "upstream_mode": "100644"
+    },
+    "assets/new_concat_logo_512_square_dark_theme.svg": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e49fd0e1eb60262321b1746cdcf800913a618143",
+      "upstream_mode": "100644"
+    },
+    "assets/new_concat_logo_512_square_light_theme.svg": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "2ca48f74750472e8cc40f9c73e174b1a82fee805",
+      "upstream_mode": "100644"
+    },
+    "assets/proxyon_sponsor_logo.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "d8f4ffe7fd10150b05c15941a676dccec8f239c8",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/AppxManifest.xml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "8dd38116116e7203b3f7c9e8a586114e548153b5",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/concat.iss": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "96ae7d5114bf072bc1e587b74399309f660cbff9",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/concat.wxs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "72ef893db725e1e506ed53fb11a0d0cdb863717e",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/store/Square150x150Logo.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "25a8e81c4d482437cd89bf4df0764017e80c4c45",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/store/Square44x44Logo.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e43dd528cf88062bfd75738ba1aa158310dd2940",
+      "upstream_mode": "100644"
+    },
+    "assets/windows/store/StoreLogo.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "f7eab3ba504874d0c590778fe703ef2a3726835d",
+      "upstream_mode": "100644"
+    },
+    "docs/README.ar.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "4265c683014150df69c0f6f8d3ea54e4cd63eae4",
+      "upstream_mode": "100644"
+    },
+    "docs/README.de.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e5fe91ad28b78da6cc724aa4e8d511a87f0b60ac",
+      "upstream_mode": "100644"
+    },
+    "docs/README.es.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "aebc7a6ae14231f01309d3493678a038733b3636",
+      "upstream_mode": "100644"
+    },
+    "docs/README.fa.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "9b4de3e334539f372fced6cd4ff777de5572989a",
+      "upstream_mode": "100644"
+    },
+    "docs/README.fr.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "4b7e173665abb779b59f07170d9a10d4ffa76377",
+      "upstream_mode": "100644"
+    },
+    "docs/README.he.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "d555e59bbb3a55ce09aacef4c9abe2ea65a6720b",
+      "upstream_mode": "100644"
+    },
+    "docs/README.hi.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "bc83fdc2e9196d39df6b39ac413713c40b4855ea",
+      "upstream_mode": "100644"
+    },
+    "docs/README.hr.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "59194f2377d19d08a1d3d7e5647e686d21946e55",
+      "upstream_mode": "100644"
+    },
+    "docs/README.id.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "9053a75977363056703164c2e7c2d6def02db1b9",
+      "upstream_mode": "100644"
+    },
+    "docs/README.it.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "07f14ee9e2c95ed74a4506c272240f1084bf9e4a",
+      "upstream_mode": "100644"
+    },
+    "docs/README.ja.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "f0828bc3177fcf4e261ad60f3a1b6c79bcbc33dc",
+      "upstream_mode": "100644"
+    },
+    "docs/README.ko.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "095fab4ddfcc90ec2f6c422fa397b105683063cf",
+      "upstream_mode": "100644"
+    },
+    "docs/README.pt-BR.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "a1acb3c3da49cb39bf502987df00acf39a6cd430",
+      "upstream_mode": "100644"
+    },
+    "docs/README.ru.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "8979e962ffd1a0f4d988bc2f6ee6200bc72da074",
+      "upstream_mode": "100644"
+    },
+    "docs/README.tr.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "500c266cf839d3f96cecc06fb6242055204a3c6b",
+      "upstream_mode": "100644"
+    },
+    "docs/README.uk.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "764f3fe8f37ccd337b7337d51d4517d08e1a53c4",
+      "upstream_mode": "100644"
+    },
+    "docs/README.ur.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "c687201879b432ff6508d7201990eca512f165c4",
+      "upstream_mode": "100644"
+    },
+    "docs/README.vi.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "09450dbd6e19ec7228561a507a2e79b61d502870",
+      "upstream_mode": "100644"
+    },
+    "docs/README.zh-Hans.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "25e410eebfa56dc88749d6dacc9573f61bbea18e",
+      "upstream_mode": "100644"
+    },
+    "docs/README.zh-TW.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "afc968420a11e2ba96d9e11d0104edf4e394d51c",
+      "upstream_mode": "100644"
+    },
+    "docs/agent-engine-foundation.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "7467549c7f335be9658cc9f39479251520ff51ea",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-operated engine foundation: remove conventional GUI, preserve presentation hooks, isolate fork state and record modifications.",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/known-engine-limits.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "991c2b5321dcdafcd4fdbe893cfd84a981ae4a69",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-operated engine foundation: remove conventional GUI, preserve presentation hooks, isolate fork state and record modifications.",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/licensing-process.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "c5d7a141d87469d0088d2f2c67cc5c07ecaf6d92",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/presentation-hooks.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "14f983ca7da093aff48fcd367755e3017a6600c2",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/windows-build.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "89248ab03543adc571e0c7d4ed65675c339291df",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "flake.lock": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "bbc6268eb9ceacdb8aeb4949a69fc6e4ff464301",
+      "upstream_mode": "100644"
+    },
+    "flake.nix": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c9de125e51f97a039b3c01028c6eb276ee130f14",
+      "upstream_mode": "100644"
+    },
+    "scripts/check_modification_notices.py": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "2f1e682c50b467a24042c91f9f29ec8f4024e8fe",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "scripts/editor-preview-sop.md": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "fdbbb742e9cd0759e7daeba13d3f6023e6a2f848",
+      "upstream_mode": "100644"
+    },
+    "scripts/generate-icons.sh": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "28cad2fd3a05f5e382fbe351796230e17be63714",
+      "upstream_mode": "100755"
+    },
+    "scripts/locales.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "25459b3b7871dc5f2abc626bb60ee6539454c6f2",
+      "upstream_mode": "100755"
+    },
+    "scripts/make-preview.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "b7237f457284e55f8d01aa2c5918ea983d53c7e6",
+      "upstream_mode": "100755"
+    },
+    "scripts/models.py": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "f1143313b808baf6f9e16a49da76577d9e38cf0a",
+      "mode": "100755",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2f5aaad20f9458a8fdca7a6799c3f65ae3894410",
+      "upstream_mode": "100755"
+    },
+    "scripts/readme/gen.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c647278b00813263afc4452fa56f7fa9717078cd",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_ar.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ae25820ac2b4872dbf705f8491247c617d9dc42b",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_de.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2f52e4c0ecbb529d8daffb37e6232ac5331ef29a",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_es.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "08b78dbad9ae40009356b84961307ac97420e229",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_fa.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6231580f5e669dd39c7fef72b6baf4eb69c57d7f",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_fr.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5d41a3db909cf71f1f51ec0b44d8baa10860a8f6",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_he.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ae77540633c3de253236fcdc7d3fe26d60776b95",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_hi.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "558d9f929190ff09fe78805b108d1ac022a2653a",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_hr.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d45b7ac8ab46f0be2f4ed14cf44108ce26ce911d",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_id.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "1e9b6e7836e281f805c920bee3a84e2e3aa7b351",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_it.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6402b19f5aa1a719c9cf87daac81033e7ac51d64",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_ja.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5a021647059a33a53f9af5b56da91215df46bfc9",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_ko.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5d609c0f5dba360b0c022646d38adc629483d04b",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_pt-BR.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "1360080c6221d43f89549ae4458566bb98ed807d",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_ru.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "4707657a64ce23ecd79a6cbc5af6849afdee5f52",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_tr.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c53efba8b1ecc24e92498dd36e281ee561ed29ad",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_uk.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "799ea020fea87df77af832556d1f6b0132c4867f",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_ur.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f9bec62cada98773827e97492fbaf0d4a1682dae",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_vi.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a3a2658af330f3b5bf5d4b877893aefc2ec08fcb",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_zh-Hans.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6dc4246821d70234f18bbd6bea0858ae2bea8a64",
+      "upstream_mode": "100644"
+    },
+    "scripts/readme/lang_zh-TW.py": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "00c816cf7706f21e86f27f7b80dc1182ccd441c8",
+      "upstream_mode": "100644"
+    },
+    "scripts/tests/test_modification_notices.py": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "c0f6170b030fb31110b0e612c0f4aab119cfd8df",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "scripts/with-engine-env.ps1": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "361873256796dd711b333728b1cceba3e9103245",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Keep compiler discovery separate from graphics runtime DLL search.",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/.cargo/config.toml": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "85d24857d2aac9ac0d36ceb7bc170ee1b288684a",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ba66476b49c4caf215a6458aea1ba4c7be8997e0",
+      "upstream_mode": "100644"
+    },
+    "src/Cargo.lock": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "a19e33894f2fd1c787920501acd314ae9df01a1e",
+      "mode": "100644",
+      "notice": "central:generated",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "e077da7cfd4988bc7a04556dce81740943d7232d",
+      "upstream_mode": "100644"
+    },
+    "src/Cargo.toml": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "cf2bc145ddb9409f0ebcfb8cdb3282f172bf6796",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "1dd4ecd1a3d59810d36b03836d18985ef3147c60",
+      "upstream_mode": "100644"
+    },
+    "src/README.md": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "81923de1465f7e23272f700c9620a7978a6ae038",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "26672c68b25d17041a59841b7e889f79a810bc42",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/Cargo.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "936c111c54d713d694da439e010f2850d7427d48",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/build.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "94da021dec182a96856fc5764fa71d6ec355095e",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/java/ConcatFiles.java": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "798beef4da60d602c2c5b78755a7b16fed84efa1",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/res/mipmap-hdpi/ic_launcher.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0cc33552427f21abb5881a3304cfa8a024df7ff3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/res/mipmap-mdpi/ic_launcher.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "497b40ae0037481e1f129c64d64b1c96342798a4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/res/mipmap-xhdpi/ic_launcher.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e14e6a0780a6d83886fcf91c685cbbc5a533244b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/res/mipmap-xxhdpi/ic_launcher.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "bda3ba1a3307aeb5980dbd69e028d204a0a6a8be",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/res/mipmap-xxxhdpi/ic_launcher.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f2c30d4295e728ef82b967bbdea1f949f343e7a6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-android/src/lib.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2daea09f6367efa24f457c928310524bba1b7912",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-effects/packages/concat.bloom-pulse/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "72cbb682bdb6a7f57bccbc26d2cdc42d8cfbafd1",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": "ec7e9f8ede3a86247c11cca598560b1691c0c07f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-effects/packages/concat.gaussian-blur/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "2f01798174f3dc6cfefe0f8b13ec3b2a7e8e62ad",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": "6255e4601312a2c5537953f547c57b0bfa1a42d9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-effects/packages/concat.glow/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "560cfb5dfd8b2936d53413b9dc2842876498e20a",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": "86c1020a0883a388dcc68b519b88261afd41a61a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/Cargo.toml": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "43631de2a3987c4c02e3f2b03cc39c9583682c92",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "c300ee30522da119ab11d78c3ff1d5b34a88ceab",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/build.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "0dd9ae0bd539b75bb4c66d741a76785fa2399f97",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/src/cards.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "029f678a5f2bb1e1d6a703c19ab85fdfae62a7ed",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "upstream_blob": "56138db70bbf28dc19d5488b1bdf99437d4b893f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/src/dirs.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "2fe6ab3cce0caced0b01e049b6bc70c9d2ddabb1",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": "575855d66a9f5d900ffd329b16cb9601a38f05b5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/src/lib.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "8c4976d1c4640a73f08e6812c461da0df264c49f",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6a978b10511899b3c2f10eec2f2d68dc0888b3b7",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/src/text_presets.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "9067522aabe5512d77e835cc812c768114311e4c",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/src/updates.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0a00e5e70564d713dc36cc723223112db55885d2",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/tests/export.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "eaee9a4063b1e20e3a41697cea9450ea49bedeb1",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": "d08af09f696871b0227a8ddbb164f08914c5c85a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/text-presets/concat.atomic/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "2450d99d76543b3201717826f212a1af75a6bee4",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.blackletter/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "f54afc1a2198a3e551cfc0a57f76ffda817b38f5",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.block/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "91f43279fc7a1c949f484ef76c87808f581efdb3",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.bold-caption/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "5dbdfd70df7897ddf4ada93c7390ccd08e019f55",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.candy/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "9fd8daff6ad4f3a4dbe1a58ddbb97e7a8f50db4f",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.cartoon/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "a2c8c33ba43cbd4c6125c7a3233c7b9660da3d67",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.clean/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "9611b629836a22482cf4524db7ff0e924fd31296",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.code/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "5b31037e6e0849e630f98f00510dc49ed8437616",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.comic/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "50f1befc0a97fe88d579697adc509488054e2e97",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.diner/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "3fbe680ff5463c6e54189e5088649844cbe3296c",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.editorial/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "5ea8de033a0305c5c27465e1cd7e075976ba7bb8",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.fashion/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "b83e521f6275f1703a14332b2120f72801458a30",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.friendly/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "6dfac64c9ba8db4dd89175f4cad7d4abbc360f44",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.hairline/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "5118b098ec0e04c0d40c57ba3e07b269db3b292d",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.handwritten/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "79101943315d025e08afe751cb02a0b7148cc07d",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.hebrew/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "5ad618380cbc160a4817dd34d68bb72300315af8",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.impact/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "786fe3733a589a23912b9acd6a1d11dab8eeee1e",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.japanese/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "4e993887e304824deaa7e0d8920efebb575f56d6",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.lower-third/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "58c239e052ee30e02e30d33e4ea2ba8ccbef810c",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.marker/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "7918ddb1ddf6344c59ce75ea7d019c3b316957c6",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.mission/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "2c54f1a057648f2e0adb9281c97b858df5472e7e",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.mystery/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "c3f40f0999587b630d19fd8b26940e68bef2aad0",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.notes/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "549b1bd5b2e91468da881cb011c4f92f0f33f944",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.pixel/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "8e08c3d14e393efd6cce7a070d1acda3bdc2cd9b",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.poster/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "53c17324cd9800a30726efcfa1059b2860b82853",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.retro/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "e8e1b0e2524581cb6f2353de746fbb50d4b5ff3a",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.scribble/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "cd14d3495b03001cb098c1034405244c043e0459",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.stencil/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "2bd5b9c4bf997fa07d813552d1af5daea84bc20d",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.tech/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "64783be337af679856fe2cdb707ba9ad6bbabfe6",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.western/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "43e3cfca07eb66f53765bf90293a25e4413422a1",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/concat.zoo/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "924321203e0def4e9ad46d4b7587f56d6b2ef7c5",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-host/text-presets/default/preset.toml": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "005e6e8c6f1aaaee2409d8ae38376e8c66448e86",
+      "mode": "100644",
+      "notice": "central:unmodified-upstream-copy",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-project/src/captions.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "895eba2b3f0a89accc1c40d5ee86d646c5ad66e4",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "src/crates/concat-project/src/lib.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "8826de0b3119e0d1f07e2168af465bd8b0788e17",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a9f879e81631a9540ea4b91c4d6085c06b30c1db",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-render/src/gpu/tests.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "5b67d6941bbe981e0bcd52593fc623bfcb52252a",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": "7a831b1e8bddcd4be0ff6df21bc56515d012f7c3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-text/src/lib.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "580faa51de032da1b1a3253c3f231ae9e3becc78",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "be7ad41370c3e053a6119e9544b10c77c912c79d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/Cargo.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "aebe9cc4e4cb99f8c7b3590cd0f35d5ab53ead9a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/build.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c581d71c3da60b59139f031ed7ef0defbca88c5c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/de.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0b463c3957191080fcde9818b662410045b7f620",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/en.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "9b189378f2f14828dc25babc849aa1f99e8dea98",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/es.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "bad7ab793d54632c1a8db034b2a8b04b43c54d6b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/fa.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "55775d309157c67ef87a3fe5cd94e2c1275df792",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/fr.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5c34c1cb9ccc90345bfe5e927de6c35e85fdfff8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/hr.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "7ca8c23e97217246e659e73c205f05d7adf7b627",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/it.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e7f363007a046fe137398b232bca541b81007b5e",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/ja.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "456fa7a67f34ccfbf875af23fac750a3c2397608",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/ko.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "96ff4e1299b76502595483163648d95dbeade33a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/pt-BR.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e1dc94a4350b3bcfea417e7750b268323d3bfbeb",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/ru.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e8d915b630977fe5a3621ef3dd9de87c06204bb7",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/tr.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8b75d3fdcd443c8935a0f6cba0d277c6d675fdd0",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/zh-Hans.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e3339273dd0c1febc3f3754763d5f87cdeab3729",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/locales/zh-TW.json": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "538c780048e98c1b79c2a7bd8401ec772e1b26eb",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/chips.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5d51a0eda8607439622ae9f45280075ad509f791",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/dock.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "471d363b31b3d7cab1403260a7aa6ec9f2280d19",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/fonts.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5cc38dbf0237ec1a676ff51eca2f94422beb9f44",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/format.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "27a1f04a8066826ebfeaaa94316b2c4d3bed78fa",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/gpu.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8ec2ac0c9dd83794d0ff7ded8fe7b923bb2fb9d4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/grading.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "05da8fe29bc78907bb4095449a143b9d458909e0",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/host.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ac2c7098c2f5ef52a593cfd94fdb8c4e01346fb9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/i18n.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e571934d95de050fe0f224c23ab42b3c162a9e06",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/lib.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f959490c486659ebd565f41706ca4253da0e824b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/main.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a178edca9694056731cd637b82db4a519790d140",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/meters.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "cc19afb22621e0cfba5db0d33934383a8245cd94",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/captions.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "618b5c162319e013a76a2386a5e76c26d3130f4c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/export.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "7eb8fb5864ddb56228b86e9b56d88e821b58a718",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/media_bin.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3b90b901adbaef18304b04611c99ec1bbcfd88c8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/mod.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "caf71dd2f50d1132ed0a5bb0da2d61a8e6530e66",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/monitor.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5d32ecbc05cdf0abffb8f4fcd2933540180e27e4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/project.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0a43d2ee13fea8b108a36f9bcd80cb6646911024",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/relink.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0beed4847fe1e3e00cc26ce97480ef7df1530151",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/settings.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0a9d4ad4d210a27bdaecbbc8d41124c245b5c307",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/speech.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "9cbcaf581ce98adad2e68a6e982d9863fa9f779a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/start.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c7c0b1c6f02ba6081861ac0c5b935416845c8bfd",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/timeline.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "70c5bff311d306d4744d93eade758d0dd076d02d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/panes/voiceover.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f540ebbfeef1a0b464a89c6e7db2ed2beff93084",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/platform.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f65077ca6e1239b2e74e4445e91d01fec860b9d5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/prefs.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3bdf04d44a6c389ba77f523567388ed6303f07a8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/presets.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c8d5a193fdb4f1880bb390e8c11898ff934ce6c9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/source.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5b35c4ee1c378f87eaddb55c9650624fd8323630",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/studio.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a19b2443a2cf55a3a879b817215fa4651ca332db",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/sysinfo.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "436490103d3ba5fa604ee4471648179d7d9f887a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/src/wayland_drop.rs": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e1a0e09c82c616bc208cb5543e9f77d1e1e4ca36",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.atomic/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2450d99d76543b3201717826f212a1af75a6bee4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.blackletter/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f54afc1a2198a3e551cfc0a57f76ffda817b38f5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.block/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "91f43279fc7a1c949f484ef76c87808f581efdb3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.bold-caption/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5dbdfd70df7897ddf4ada93c7390ccd08e019f55",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.candy/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "9fd8daff6ad4f3a4dbe1a58ddbb97e7a8f50db4f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.cartoon/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a2c8c33ba43cbd4c6125c7a3233c7b9660da3d67",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.clean/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "9611b629836a22482cf4524db7ff0e924fd31296",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.code/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5b31037e6e0849e630f98f00510dc49ed8437616",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.comic/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "50f1befc0a97fe88d579697adc509488054e2e97",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.diner/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3fbe680ff5463c6e54189e5088649844cbe3296c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.editorial/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5ea8de033a0305c5c27465e1cd7e075976ba7bb8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.fashion/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "b83e521f6275f1703a14332b2120f72801458a30",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.friendly/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6dfac64c9ba8db4dd89175f4cad7d4abbc360f44",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.hairline/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5118b098ec0e04c0d40c57ba3e07b269db3b292d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.handwritten/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "79101943315d025e08afe751cb02a0b7148cc07d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.hebrew/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5ad618380cbc160a4817dd34d68bb72300315af8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.impact/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "786fe3733a589a23912b9acd6a1d11dab8eeee1e",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.japanese/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "4e993887e304824deaa7e0d8920efebb575f56d6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.lower-third/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "58c239e052ee30e02e30d33e4ea2ba8ccbef810c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.marker/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "7918ddb1ddf6344c59ce75ea7d019c3b316957c6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.mission/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2c54f1a057648f2e0adb9281c97b858df5472e7e",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.mystery/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c3f40f0999587b630d19fd8b26940e68bef2aad0",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.notes/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "549b1bd5b2e91468da881cb011c4f92f0f33f944",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.pixel/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8e08c3d14e393efd6cce7a070d1acda3bdc2cd9b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.poster/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "53c17324cd9800a30726efcfa1059b2860b82853",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.retro/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e8e1b0e2524581cb6f2353de746fbb50d4b5ff3a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.scribble/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "cd14d3495b03001cb098c1034405244c043e0459",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.stencil/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2bd5b9c4bf997fa07d813552d1af5daea84bc20d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.tech/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "64783be337af679856fe2cdb707ba9ad6bbabfe6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.western/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "43e3cfca07eb66f53765bf90293a25e4413422a1",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/concat.zoo/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "924321203e0def4e9ad46d4b7587f56d6b2ef7c5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/text-presets/default/preset.toml": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "005e6e8c6f1aaaee2409d8ae38376e8c66448e86",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/app.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "725e94f3776f1e21479835ed68ea96d94ce1e60f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/assets/concat-logo.png": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "991f698ddf4bf475f7d8797e44135dae290f37b4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/demo/editor-chrome.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6ba2c0e376f29af43f4d4e09797b043f79b411d7",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/demo/effects-panel.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ec7f6d34f156700defe83997d3c50ae7cde981c3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/demo/interpolation-panel.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e7209c75b915b3e506eae9e83e5051a3fbc40cfb",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/demo/transform-panel.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "9a28de3a5c0e7ba7d1701847d7b223f7f7b7fb9e",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/captions.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "7160619a2dc7a16149b3a96810e9c9d5194385f3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/confirm.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f155f27d128fabcdf8de360cfae82bb52ab6223b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/export.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d5c92583d53b7fced6c699d4a2c1671fbb694b36",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/project.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "120f8cdf2ac045f5da6f5beeb194cca28751fe74",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/relink.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "426fd2b08d4c180912da2be7fe38a03fedee3f9b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/settings.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "689ce35593b503b7bc418767baf2fe47e1feeed6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dialogs/speech.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ae2c6a608c0bc01fd7bf8786b7d8b713e3c062f9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/dock.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "eb62c649cd5cc9c2e58c95d206b8fdb53d6b22e1",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/editor.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "468fc6e9e13651eb6bff73a4803e0858b2b631af",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/i18n.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "2fb76841bb12021c9b5531795f88d31098a30a85",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/icons.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6591d56bca36fb015ccb7fe2d9318fa1b59ab90f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/inspector/clip-inspector.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c8320129846fd5a207302736993bd1855095253f",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/inspector/controls.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "af289db2400ac3c7316e556bf68a02a6548a6f4a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/inspector/font-picker.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "40c19238b48b2d3a57774013cb24d8cc99f92ce8",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/inspector/grading.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "27bf7c1a0352bd856c5980a3c9f6c610a7eaf563",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/inspector/text-panel.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8f779caa3fa49bcc2389a1a300d403530be9d71c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/phone/controls.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "c8b5db204c57cc209ac6a03ddd2854d6c064b584",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/phone/editor.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d9f6098ba8e0bf2c073c4e86494aa924d266a8ab",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/phone/sheet.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "7303a4c2d04460ea4808e6a2a371491569b49a9a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/bezier-editor.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "400f9132362d6c04dd63d95be0ec042937cb3abb",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/color-picker.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "91a4b34c816f71db89e00e44a0fa9e7df7099d94",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/context-menu.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a26428a43d553cd0688b4eb556f77a83a9836b00",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/focus-ring.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "aacc1e1e58c31c2a96829f5dda1caac706a7140d",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/kbd.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e7f703fcaeb6cbf9e812c89af5844defcaf9fbd1",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/knob.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e11dbdc694bcc4cf287671862bc3a1d092a6b125",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/level-meter.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f22e3d5d377596767accc5447018bfceaa1f5af3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/modal.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "cad307e84c2936ab28fcf1b3626499499f05371a",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/number-field.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f3e0ecabadc2c736b20db5c07f4c64b950bb2184",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/panel.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f538ce374801322b66d53ab4c7e7f7b108609dc6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/primitives.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "69936ed29abdd22faa2618d971de2ab1e0fd326c",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/scrollbar.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e55200885c5bbf4365a88ad9b5b0731b35840b94",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/segmented-control.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0f8bf5fd7257754261bfee7ffe3e8f9f1b24f145",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/select.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "19d66e713a2cde824930c6e3f337a08944f1a783",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/stepper.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "f00052aa90bbbca900291f53fdd33b2e9c6494e5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/toast.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a336d0baa68a21c7ddfbed2a218625061f4d3da4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/tooltip.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "99caac1e45e965735766fdd4f443067868e4e578",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/primitives/wave.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3acbe9da14c42f757a6986c285f783b32f53e5d4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/start.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "38267296dc0bbe096fde2c07bc963800c8a3cc34",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/theme/accent.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "0800914e06a4c6ac39bfebf19d93b543f4d01b6b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/theme/dark.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "4474b9e059c797a3c7ae531d354335de5dd463b5",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/theme/light.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d6aafc460bc3576c4e626d445e54848889d7d9a9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/theme/theme.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "aaf629539f3b8b91ffbcaba9f404534aec846cc6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/timeline/lanes.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "5b1fa0c626375f53eebf11e87214178d5f4c81ee",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/timeline/model.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "4557d0fcd95c9c7ef490c825e5ca93951986ff36",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/timeline/tabs.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d3912ceb4a277d6404de0eb293fe5b44448157aa",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/timeline/track-header.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ef7f78fcf31f5328b36a01822a89355b4bf8e337",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/timeline/tray.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "ffdbf4724dfec6a387588d584a3af3b6d7658234",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/title-bar.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "188817e08a9d66fe82cbda6ef41e12efd7646d76",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/util.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3df07cb07048fbdd107b2b612f4351f0f96c06dd",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/config-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "bccdd5ba049d08e55bcaee1bcfb41863290929cb",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/keyframes-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "d232718dc4844ca7ea8e365817e422af38fd9234",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/media-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3fd640c02fb2c380367f691728b3b4993d641ef3",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/meters-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "e9d16fdfd17b84c5e104376b9cbf9ac6df77d080",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/pane-switcher.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "62144850afa36eb7606bb558134203d77da7c59b",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "b771c99db3da3afc2f70a4c7c3e67d11da8c5572",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/preview-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3ef7ca98a5ff4a4374ba8ce283f572ea6f34d012",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/seat.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "3ef91fdf30aa4a1b06a9ff3f98ee693ffd3f23e4",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/splitter.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "10abbb31f9b702981edd4fb526dc17fe5d4541fd",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/timeline-pane.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8e27b92fc7deae3e595a2bd8c76ffdb7493448ff",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat/ui/workspace/workspace.slint": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a0860c7d76c18140d22960be5445723ae938f798",
+      "upstream_mode": "100644"
+    },
+    "src/rust-toolchain.toml": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "d2232ea9a20e3a28eab5c38badaa03babd902a15",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "36c87b3f9fecffe6026c7f439645db93e40f14d5",
+      "upstream_mode": "100644"
+    },
+    "src/scripts/ffmpeg-mobile.sh": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "d1d7a300f7e523c47fc3c4972204fd2686513007",
+      "mode": "100755",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "69746e3700fbc256b9ce3faaa91d44be3f8f470e",
+      "upstream_mode": "100755"
+    },
+    "src/scripts/ios-app.sh": {
+      "change": "deleted",
+      "changed_on": "2026-10-07",
+      "git_blob": null,
+      "mode": null,
+      "notice": "central:deleted",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "6dcc3b82d445d056f8a3edaf2ff74e41f7f22cfc",
+      "upstream_mode": "100755"
+    },
+    "src/scripts/mobile-env.sh": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "a8d9738590f5f3d87eeb62a4be55d001e8e8f057",
+      "mode": "100755",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "a611cd255a3d7a1d8aa3c23661c91dc9efc5ab5d",
+      "upstream_mode": "100755"
+    },
+    "src/scripts/sherpa-mobile.sh": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "b393c07d23306e2e4495ac22a5821b3604dc169b",
+      "mode": "100755",
+      "notice": "inline",
+      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "upstream_blob": "8051826402a313487b81f3ce05114e4d41bcc72a",
+      "upstream_mode": "100755"
+    }
+  },
+  "fork_repository": "https://github.com/puntastic/concat-song",
+  "index_sha256": "75f48586411123f548b936a908d6467bb3c0ab1a65df7cb8ff1e8724bba7ebcd",
+  "license": "AGPL-3.0-or-later",
+  "recorded_on": "2026-10-07",
+  "schema_version": 1,
+  "upstream_commit": "f1f2f3eab310a3220b2fcdb47531d3d3b85d6713",
+  "upstream_committed_at": "2026-10-06T12:50:07-07:00",
+  "upstream_repository": "https://github.com/jub0t/concat"
+}

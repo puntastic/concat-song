@@ -1,6 +1,7 @@
-# Pinned so a checkout in two years builds the same way it does today.
+# Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
+# Exact patch version: a minor-only channel can change beneath the same checkout.
 [toolchain]
-channel = "1.93"
+channel = "1.93.0"
 components = ["rustfmt", "clippy"]
 # The engine crates that carry no native library build for the web too, and
 # CI checks that they keep doing so; see README.md.
