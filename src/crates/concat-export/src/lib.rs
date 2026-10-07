@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Rendering a timeline to a file.
 //!
@@ -23,6 +24,8 @@
 pub mod chains;
 pub mod flatten;
 mod resolve;
+#[cfg(test)]
+mod surgery_tests;
 
 use resolve::{BuiltTimeline, TransitionSpan, Treatment, animation_of, build_timeline, quantise};
 
@@ -532,7 +535,20 @@ pub(crate) fn transitions_at(shapes: &[TransitionShape], frame: i64) -> Vec<Tran
 /// `combine_transition`. Legacy ids are matched first and never reach this
 /// path, so a project saved before packaged transitions existed renders
 /// exactly as it always did.
-fn resolve_transitions(clips: &mut Vec<ExportClip>, rate: FrameRate) -> Vec<TransitionSpan> {
+fn resolve_transitions(
+    clips: &mut Vec<ExportClip>,
+    rate: FrameRate,
+) -> Result<Vec<TransitionSpan>, String> {
+    let mut staged = clips.clone();
+    let spans = resolve_transitions_inner(&mut staged, rate)?;
+    *clips = staged;
+    Ok(spans)
+}
+
+fn resolve_transitions_inner(
+    clips: &mut Vec<ExportClip>,
+    rate: FrameRate,
+) -> Result<Vec<TransitionSpan>, String> {
     for clip in clips.iter_mut() {
         clip.track *= 2;
     }
@@ -574,7 +590,7 @@ fn resolve_transitions(clips: &mut Vec<ExportClip>, rate: FrameRate) -> Vec<Tran
             "cross-fade" | "push" | "zoom" | "wipe-left" | "wipe-right" => {
                 // The picture before the cut on the lane above: the
                 // incoming clip itself, or its first frame held.
-                let Some((incoming, d)) = pre_roll(clips, &cut, frame) else {
+                let Some((incoming, d)) = pre_roll(clips, &cut, frame)? else {
                     continue;
                 };
 
@@ -684,7 +700,7 @@ fn resolve_transitions(clips: &mut Vec<ExportClip>, rate: FrameRate) -> Vec<Tran
                 .get(kind)
                 .is_some_and(|package| package.transition().is_some()) =>
             {
-                let Some((incoming, d)) = pre_roll(clips, &cut, frame) else {
+                let Some((incoming, d)) = pre_roll(clips, &cut, frame)? else {
                     continue;
                 };
                 let b = &mut clips[incoming];
@@ -707,7 +723,7 @@ fn resolve_transitions(clips: &mut Vec<ExportClip>, rate: FrameRate) -> Vec<Tran
             _ => {}
         }
     }
-    spans
+    Ok(spans)
 }
 
 /// A cut with a transition on it: which clip comes in, which goes out, and
@@ -735,7 +751,11 @@ struct Cut {
 /// black (#236). The hold is the clip with no sound, no keys and no fades
 /// of its own, so the picture coming in is the one the clip then plays;
 /// a keyed placement is held where its ride has it at the clip's head.
-fn pre_roll(clips: &mut Vec<ExportClip>, cut: &Cut, frame: f64) -> Option<(usize, f64)> {
+fn pre_roll(
+    clips: &mut Vec<ExportClip>,
+    cut: &Cut,
+    frame: f64,
+) -> Result<Option<(usize, f64)>, String> {
     let (a_track, a_duration) = {
         let a = &clips[cut.outgoing];
         (a.track, a.duration)
@@ -743,26 +763,75 @@ fn pre_roll(clips: &mut Vec<ExportClip>, cut: &Cut, frame: f64) -> Option<(usize
     let b = &clips[cut.incoming];
     let d = cut.duration.min(a_duration).min(b.duration);
     if d < frame {
-        return None;
+        return Ok(None);
     }
-    // Footage before the in-point, in timeline seconds.
-    let handle = if b.kind == ClipKind::Image {
-        d
-    } else {
-        b.source_start / b.speed.max(f64::EPSILON)
-    };
-    if handle + frame / 2.0 >= d {
-        let b = &mut clips[cut.incoming];
-        b.start -= d;
-        b.duration += d;
-        if b.kind != ClipKind::Image {
-            b.source_start = (b.source_start - d * b.speed).max(0.0);
+    let curve = SpeedCurve::new(&b.speed_curve);
+    let head_speed = curve.as_ref().map_or(b.speed, SpeedCurve::start_speed);
+    let needed = d * head_speed;
+    if b.kind == ClipKind::Image || needed <= b.source_start {
+        let mut extended = b.clone();
+        let old = b.duration;
+        let a = -d / old;
+        extended.start -= d;
+        extended.duration += d;
+        if !extended.start.is_finite() || !extended.duration.is_finite() || !a.is_finite() {
+            return Err("Transition pre-roll has a non-finite interval.".to_owned());
         }
+        if b.kind != ClipKind::Image {
+            extended.source_start = if let Some(curve) = &curve {
+                let window = curve
+                    .window(a, 1.0)
+                    .ok_or("Transition pre-roll speed interval is not representable.")?;
+                extended.speed = window.mean();
+                extended.speed_curve = window.points().to_vec();
+                b.source_start + old * curve.consumed_extended(a)
+            } else {
+                b.source_start - needed
+            };
+            if !extended.source_start.is_finite() || extended.source_start < 0.0 {
+                return Err(
+                    "Transition pre-roll begins outside the representable source.".to_owned(),
+                );
+            }
+        }
+        extended.animation = window_animation(&b.animation, a, 1.0)?;
+        for effect in &mut extended.effects {
+            for keys in effect.keys.values_mut() {
+                let track = AnimTrack::new(
+                    keys.iter()
+                        .map(|key| AnimKey {
+                            at: key.at,
+                            value: key.value,
+                            ease: key.ease.into(),
+                        })
+                        .collect(),
+                );
+                let window = track
+                    .window(a, 1.0)
+                    .ok_or("Transition effect-key interval is not representable.")?;
+                *keys = window
+                    .keys()
+                    .iter()
+                    .map(|key| concat_project::model::ParamKey {
+                        at: key.at,
+                        value: key.value,
+                        ease: concat_project::model::KeyEase([
+                            key.ease.x1,
+                            key.ease.y1,
+                            key.ease.x2,
+                            key.ease.y2,
+                        ]),
+                    })
+                    .collect();
+            }
+        }
+        clips[cut.incoming] = extended;
+        let b = &mut clips[cut.incoming];
         // Sound rides the picture: the pre-roll fades in rather than
         // arriving at full level a dissolve early.
         b.fade_in = b.fade_in.max(d);
         b.track = a_track + 1;
-        return Some((cut.incoming, d));
+        return Ok(Some((cut.incoming, d)));
     }
 
     let mut hold = b.clone();
@@ -804,7 +873,7 @@ fn pre_roll(clips: &mut Vec<ExportClip>, cut: &Cut, frame: f64) -> Option<(usize
         }
     }
     clips.push(hold);
-    Some((clips.len() - 1, d))
+    Ok(Some((clips.len() - 1, d)))
 }
 
 /// The timing functions the transition shapes ride on, as `ExportKey` holds
@@ -899,7 +968,7 @@ pub fn render_on(
     // else reads the clip list, so the picture and sound paths below never
     // know transitions exist.
     let mut resolved = request.clips.clone();
-    let transitions = resolve_transitions(&mut resolved, rate);
+    let transitions = resolve_transitions(&mut resolved, rate)?;
 
     // Stills composite exactly like footage; they only differ in how they are
     // decoded, which is handled where the decoder is opened.
@@ -940,6 +1009,8 @@ pub fn render_on(
         .iter()
         .map(|clip| clip.start + clip.duration)
         .fold(0.0f64, f64::max);
+    // Output length retains the existing nearest-frame policy. Individual
+    // clip/source clocks are not stretched onto that grid by build_timeline.
     let total_frames = (timeline_end * rate.fps().as_f64()).round() as i64;
     if total_frames <= 0 {
         return Err("the timeline is empty".to_owned());
@@ -974,7 +1045,13 @@ pub fn render_on(
 
         reporter.cancelled()?;
         reporter.emit(0, total_frames, "mixing audio");
-        let mix: Vec<AudioClip> = sound.iter().flat_map(|clip| audio_pieces(clip)).collect();
+        let mix: Vec<AudioClip> = sound
+            .iter()
+            .map(|clip| audio_pieces(clip))
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .flatten()
+            .collect();
         audio::mix_to_file(&mix, timeline_end, &mixed).map_err(|error| error.to_string())?;
 
         reporter.cancelled()?;
@@ -1003,58 +1080,47 @@ fn volume_track(clip: &ExportClip) -> AnimTrack {
 /// through the piece that holds it. The ends are pinned to what the whole
 /// track is worth there, which is what carries a ramp that started in an
 /// earlier piece into this one.
-fn track_slice(track: &AnimTrack, x0: f64, x1: f64) -> AnimTrack {
-    if track.is_empty() {
-        return AnimTrack::default();
+fn track_slice(track: &AnimTrack, x0: f64, x1: f64) -> Result<AnimTrack, String> {
+    track
+        .window(x0, x1)
+        .ok_or_else(|| "Audio gain-key interval is not representable.".to_owned())
+}
+
+fn window_animation(keys: &[ExportKey], from: f64, to: f64) -> Result<Vec<ExportKey>, String> {
+    let mut tracks: BTreeMap<&str, Vec<AnimKey>> = BTreeMap::new();
+    for key in keys {
+        tracks.entry(&key.property).or_default().push(AnimKey {
+            at: key.at,
+            value: key.value,
+            ease: AnimEase::new(key.ease[0], key.ease[1], key.ease[2], key.ease[3]),
+        });
     }
-    let span = x1 - x0;
-    if span <= 0.0 {
-        return AnimTrack::new(vec![AnimKey {
-            at: 0.0,
-            value: track.value_at(x0, 1.0),
-            ease: AnimEase::LINEAR,
-        }]);
+    let mut out = Vec::new();
+    for (property, keys) in tracks {
+        let window = AnimTrack::new(keys)
+            .window(from, to)
+            .ok_or("Animation interval is not representable.")?;
+        out.extend(window.keys().iter().map(|key| ExportKey {
+            property: property.to_owned(),
+            at: key.at,
+            value: key.value,
+            ease: [key.ease.x1, key.ease.y1, key.ease.x2, key.ease.y2],
+        }));
     }
-    let mut keys = vec![AnimKey {
-        at: 0.0,
-        value: track.value_at(x0, 1.0),
-        ease: AnimEase::LINEAR,
-    }];
-    keys.extend(
-        track
-            .keys()
-            .iter()
-            .filter(|key| key.at > x0 && key.at < x1)
-            .map(|key| AnimKey {
-                at: (key.at - x0) / span,
-                value: key.value,
-                ease: key.ease,
-            }),
-    );
-    // The ease of whichever segment this end falls inside, so a ramp that
-    // crosses the boundary keeps its shape rather than going linear at it.
-    let closing = track
-        .keys()
-        .iter()
-        .find(|key| key.at >= x1)
-        .map_or(AnimEase::LINEAR, |key| key.ease);
-    keys.push(AnimKey {
-        at: 1.0,
-        value: track.value_at(x1, 1.0),
-        ease: closing,
-    });
-    AnimTrack::new(keys)
+    Ok(out)
 }
 
 /// The engine's view of one audible clip - or several, when its speed
 /// changes over it. Sound can only change tempo in steps, so a curve is cut
 /// into pieces of constant rate, each at the mean of its stretch of the
 /// curve and starting where the curve says the source had got to.
-pub fn audio_pieces(clip: &ExportClip) -> Vec<AudioClip> {
+/// Tempo remains a stepped approximation, not sample-identical retiming.
+/// An unrepresentable gain interval is returned as an error, never flattened.
+pub fn audio_pieces(clip: &ExportClip) -> Result<Vec<AudioClip>, String> {
     let chain = clip.filter_chain.clone();
     let track = volume_track(clip);
     let Some(curve) = SpeedCurve::new(&clip.speed_curve) else {
-        return vec![AudioClip {
+        return Ok(vec![AudioClip {
             path: PathBuf::from(&clip.path),
             stream: clip.audio_stream.map(|index| index as usize),
             start: clip.start,
@@ -1067,7 +1133,7 @@ pub fn audio_pieces(clip: &ExportClip) -> Vec<AudioClip> {
             fade_in: clip.fade_in,
             fade_out: clip.fade_out,
             filter_chain: chain,
-        }];
+        }]);
     };
     // Pieces a tenth of a second long, or eight at least: fine enough that
     // a tempo step is not heard, coarse enough that the graph stays small.
@@ -1085,7 +1151,7 @@ pub fn audio_pieces(clip: &ExportClip) -> Vec<AudioClip> {
             let fade_in = (clip.fade_in - x0 * clip.duration).clamp(0.0, piece_duration);
             let fade_out_from = clip.start + clip.duration - clip.fade_out;
             let fade_out = (piece_end - fade_out_from.max(piece_start)).clamp(0.0, piece_duration);
-            AudioClip {
+            Ok(AudioClip {
                 path: PathBuf::from(&clip.path),
                 stream: clip.audio_stream.map(|index| index as usize),
                 start: piece_start,
@@ -1094,11 +1160,11 @@ pub fn audio_pieces(clip: &ExportClip) -> Vec<AudioClip> {
                 speed: audio::clamp_speed(mean),
                 preserve_pitch: clip.preserve_pitch,
                 volume: clip.volume,
-                volume_curve: track_slice(&track, x0, x1),
+                volume_curve: track_slice(&track, x0, x1)?,
                 fade_in: if clip.fade_in > 0.0 { fade_in } else { 0.0 },
                 fade_out: if clip.fade_out > 0.0 { fade_out } else { 0.0 },
                 filter_chain: chain.clone(),
-            }
+            })
         })
         .collect()
 }
@@ -1261,7 +1327,7 @@ fn render_picture(
         reveal_maps,
         cutouts,
         highlight: _,
-    } = build_timeline(request, rate, visible, transitions);
+    } = build_timeline(request, rate, visible, transitions)?;
 
     let options = EncodeOptions {
         crf: request.crf,
@@ -1761,16 +1827,20 @@ fn frame_request(
     still: bool,
     proxy: bool,
 ) -> concat_media::FrameRequest {
+    let built = plan
+        .built
+        .as_ref()
+        .expect("source/prefetch caller checked the plan");
     concat_media::FrameRequest::new(&layer.media, layer.source_time, width, height)
         .covering(plan.width.max(width), plan.height.max(height))
         .as_still(still)
         .from_proxy(proxy)
-        .in_range(plan.built.ranges.get(&layer.clip).copied())
+        .in_range(built.ranges.get(&layer.clip).copied())
         // The compositor fits the picture into its place, so an untreated
         // frame is drawn at the level it was decoded at - deep, for an HDR
         // clip, unless a cutout has to cut it in eight bits.
         .at_any_size(true)
-        .deep_when_untreated(!plan.built.cutouts.contains_key(&layer.clip))
+        .deep_when_untreated(!built.cutouts.contains_key(&layer.clip))
 }
 
 /// [`preview_sources`] for one instant of a plan already built. With
@@ -1796,7 +1866,7 @@ pub fn preview_sources_of(
         reveal_maps,
         cutouts,
         highlight,
-    } = &plan.built;
+    } = plan.built.as_ref().map_err(Clone::clone)?;
     let highlight = *highlight;
     let time = quantise(seconds, rate);
     let plan_at = plan_frame(timeline, time);
@@ -1887,12 +1957,20 @@ pub fn preview_sources_of(
 /// showing many instants of one document builds it once. See
 /// [`preview_plan`].
 pub struct PreviewPlan {
-    built: BuiltTimeline,
+    built: Result<BuiltTimeline, String>,
     rate: FrameRate,
     width: u32,
     height: u32,
     /// What the timeline is output in.
     output: Signal,
+}
+
+impl PreviewPlan {
+    /// A timing/representation failure retained by this plan. Frame retrieval
+    /// returns this error; background prefetch deliberately produces no work.
+    pub fn error(&self) -> Option<&str> {
+        self.built.as_ref().err().map(String::as_str)
+    }
 }
 
 /// Builds the plan for `clips` at one output size and rate. The costly
@@ -1937,7 +2015,8 @@ pub fn preview_plan(
         clips: Vec::new(),
     };
     PreviewPlan {
-        built: build_timeline(&shim, rate, &visible, transitions),
+        built: transitions
+            .and_then(|transitions| build_timeline(&shim, rate, &visible, transitions)),
         rate,
         width,
         height,
@@ -2007,7 +2086,10 @@ pub fn preview_moments(
         stills,
         decode_sizes,
         ..
-    } = &plan.built;
+    } = match &plan.built {
+        Ok(built) => built,
+        Err(_) => return Vec::new(),
+    };
     let fps = rate.fps().as_f64();
     (1..=frames)
         .map(|ahead| {
@@ -2430,7 +2512,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("cross-fade", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let b = &clips[1];
         assert_eq!(b.start, 3.0, "extends backwards over the cut");
@@ -2455,7 +2537,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("concat.dissolve", 1.0);
-        let spans = resolve_transitions(&mut clips, FrameRate::THIRTY);
+        let spans = resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let b = &clips[1];
         assert_eq!(
@@ -2490,7 +2572,7 @@ mod tests {
         ];
         clips[1].fade_in = 0.25;
         clips[1].transition = spec("cross-fade", 2.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let b = &clips[1];
         assert_eq!((b.start, b.duration, b.source_start), (4.0, 4.0, 0.25));
@@ -2516,7 +2598,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 0.0),
         ];
         clips[1].transition = spec("cross-fade", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let b = &clips[1];
         assert_eq!((b.start, b.duration, b.source_start), (4.0, 4.0, 0.0));
@@ -2536,7 +2618,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 0.0),
         ];
         clips[1].transition = spec("concat.dissolve", 1.0);
-        let spans = resolve_transitions(&mut clips, FrameRate::THIRTY);
+        let spans = resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let b = &clips[1];
         assert_eq!((b.start, b.duration, b.source_start), (4.0, 4.0, 0.0));
@@ -2572,7 +2654,7 @@ mod tests {
             ease: linear_ease(),
         });
         clips[1].transition = spec("push", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         let hold = &clips[2];
         assert_eq!(keys_on(hold, "offsetX"), vec![(0.0, 1.0), (1.0, 0.0)]);
@@ -2600,7 +2682,7 @@ mod tests {
             clip("image", 0, 4.0, 4.0, 0.0),
         ];
         clips[1].transition = spec("cross-fade", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[1].video_fade_in, 1.0);
         assert_eq!(
             clips[1].source_start, 0.0,
@@ -2625,7 +2707,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("push", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         // The overlap is the dissolve's: a second of pre-roll on the lane
         // above, sound fading in with it - but no picture fade.
@@ -2660,7 +2742,7 @@ mod tests {
             ease: linear_ease(),
         });
         clips[1].transition = spec("push", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[1].video_fade_in, 1.0, "falls back to the dissolve");
         assert!(
             keys_on(&clips[1], "offsetX").is_empty(),
@@ -2680,7 +2762,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("zoom", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[1].video_fade_in, 1.0);
         assert_eq!(keys_on(&clips[1], "scale"), vec![(0.0, 1.25), (0.2, 1.0)]);
         assert_eq!(keys_on(&clips[0], "scale"), vec![(0.75, 1.0), (1.0, 1.4)]);
@@ -2693,7 +2775,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("wipe-right", 0.5);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         let b = &clips[1];
         assert_eq!((b.start, b.duration), (3.5, 4.5));
         assert_eq!(b.video_fade_in, 0.0, "the edge does the revealing");
@@ -2733,7 +2815,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 2.0),
         ];
         clips[1].transition = spec("wipe-left", 0.5);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(
             clips[1].transition_shapes,
             vec![TransitionShape::Wipe {
@@ -2750,7 +2832,7 @@ mod tests {
             clip("video", 0, 4.0, 4.0, 0.0),
         ];
         clips[1].transition = spec("fade-black", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
 
         // Half a second each side at 30fps is 15 frames.
         let black = [0.0; 3];
@@ -2793,7 +2875,7 @@ mod tests {
             clip("video", 0, 2.0, 2.0, 0.0),
         ];
         clips[1].transition = spec("fade-white", 0.5);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert!(matches!(
             clips[0].transition_shapes[..],
             [TransitionShape::FadeOut {
@@ -2818,7 +2900,7 @@ mod tests {
         ];
         clips[1].effects = vec![AppliedFilter::new("concat.mono")];
         clips[1].transition = spec("fade-black", 0.5);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         // The fade is the plan's, drawn over the treated picture; the
         // clip's effects are as they were.
         assert_eq!(clips[1].effects, vec![AppliedFilter::new("concat.mono")]);
@@ -2854,7 +2936,7 @@ mod tests {
             clip("video", 0, 5.0, 2.0, 0.0),
         ];
         clips[1].transition = spec("cross-fade", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[1].start, 5.0);
         assert_eq!(clips[1].video_fade_in, 0.0);
     }
@@ -2865,7 +2947,7 @@ mod tests {
             clip("video", 0, 0.0, 2.0, 0.0),
             clip("audio", 3, 0.0, 2.0, 0.0),
         ];
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[0].track, 0);
         assert_eq!(clips[1].track, 6);
     }
@@ -2878,7 +2960,7 @@ mod tests {
         ];
         // A kind no build knows - the wipes are known now.
         clips[1].transition = spec("spiral", 1.0);
-        resolve_transitions(&mut clips, FrameRate::THIRTY);
+        resolve_transitions(&mut clips, FrameRate::THIRTY).unwrap();
         assert_eq!(clips[1].start, 2.0);
         assert!(clips[1].transition_shapes.is_empty());
     }

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Every edit operation, as data.
 //!
@@ -470,9 +471,12 @@ pub enum Command {
         moves: Vec<ClipMove>,
     },
     /// Drags one edge of a clip. A head trim moves the in-point with the
-    /// edge (scaled by speed) so the remaining pixels do not slide; either
+    /// edge (integrating the speed curve, when present) so the remaining
+    /// source-time map does not slide or stretch; either
     /// edge stops at the sixtieth-of-a-second minimum duration. An unknown
-    /// clip is a no-op.
+    /// clip is a no-op. Extensions continue the current endpoint speed;
+    /// they do not recover curvature removed by an earlier edit. A keyframe
+    /// boundary the model cannot represent is refused without mutation.
     TrimClip {
         /// The clip to trim.
         clip_id: String,
@@ -493,7 +497,8 @@ pub enum Command {
     },
     /// Cuts each named clip in two at one playhead time. The head keeps the
     /// id and the transition; the tail is minted fresh and stays
-    /// source-continuous. A clip the time misses (or grazes within the
+    /// source-continuous with the original nonlinear map restricted to each
+    /// piece. A clip the time misses (or grazes within the
     /// minimum duration) is skipped.
     SplitClips {
         /// The clips under the playhead - normally the selection.
@@ -537,7 +542,11 @@ pub enum Command {
     /// `duration` on the same track, and ripples later clips on that track
     /// by `duration`. Video needs a probed `still` (host-extracted jpg);
     /// image clips may omit it and reuse their media. Audio and text are
-    /// no-ops. `created_id` is the freeze clip.
+    /// no-ops. `created_id` is the freeze clip. The moving pieces retain their
+    /// original speed/keyframe intervals; the supplied still's identity is
+    /// the caller's responsibility (use [`crate::speed::source_at`] to locate
+    /// the source frame). This command retains its existing copied-look
+    /// policy; it does not bake all animated treatments into a static image.
     FreezeFrame {
         /// The picture clip under the playhead.
         clip_id: String,
@@ -783,6 +792,13 @@ pub enum CommandError {
     /// one stored would poison every duration and key that touched it.
     #[error("A number in that edit is not finite.")]
     NotANumber,
+    /// A timing edit would need an interval or key that this representation
+    /// cannot carry faithfully. The command leaves the project unchanged.
+    #[error("{reason}")]
+    CannotPreserveTiming {
+        /// The specific numerical or representation boundary.
+        reason: String,
+    },
 }
 
 /// Mints ids. Owned by the editor so restored projects advance it past every

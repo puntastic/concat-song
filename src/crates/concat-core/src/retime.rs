@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Speed that changes over a clip.
 //!
@@ -10,9 +11,9 @@
 //! which is why the curve lives here, beside the clip's affine map: it is the
 //! same fact, and every renderer has to agree with it.
 //!
-//! The units are deliberately relative. A curve stored as fractions means
-//! the same thing after the clip is trimmed or the project re-timed, and a
-//! preset can be applied to any clip without knowing how long it is.
+//! The units are relative so a preset can be applied to any clip. Editing
+//! the span is different: [`SpeedCurve::window`] rebases the retained interval
+//! so trimming or splitting does not stretch its source-time map.
 
 /// Speed over a clip, as points joined by straight lines.
 #[derive(Clone, PartialEq, Debug)]
@@ -60,6 +61,85 @@ impl SpeedCurve {
         &self.points
     }
 
+    /// Speed immediately after the start, including an endpoint step.
+    pub fn start_speed(&self) -> f64 {
+        self.points.windows(2).find(|p| p[1].0 > p[0].0).unwrap()[0].1
+    }
+
+    /// Speed immediately before the end, including an endpoint step.
+    pub fn end_speed(&self) -> f64 {
+        self.points.windows(2).rfind(|p| p[1].0 > p[0].0).unwrap()[1].1
+    }
+
+    fn boundary_speed(&self, x: f64, right: bool) -> f64 {
+        if x <= 0.0 {
+            return self.start_speed();
+        }
+        if x >= 1.0 {
+            return self.end_speed();
+        }
+        for pair in self.points.windows(2) {
+            let [(a, va), (b, vb)] = [pair[0], pair[1]];
+            if b > a
+                && if right {
+                    x >= a && x < b
+                } else {
+                    x > a && x <= b
+                }
+            {
+                return va + (vb - va) * ((x - a) / (b - a));
+            }
+        }
+        unreachable!("an anchored curve covers the unit interval")
+    }
+
+    /// The same speed function over `[from, to]`, re-expressed over `0..=1`.
+    /// Outside the old span the endpoint speed continues constantly. Speeds
+    /// themselves are not scaled: the caller changes duration by `to - from`.
+    /// Duplicate-position interior knots retain their one-sided step values.
+    /// Returns None for an invalid interval or a numerically collapsed knot.
+    pub fn window(&self, from: f64, to: f64) -> Option<Self> {
+        let span = to - from;
+        if !from.is_finite() || !to.is_finite() || !span.is_finite() || span <= 0.0 {
+            return None;
+        }
+        let mut points = vec![(0.0, self.boundary_speed(from, true))];
+        let mut last_old = from;
+        let knots = std::iter::once((0.0, self.start_speed()))
+            .chain(
+                self.points
+                    .iter()
+                    .copied()
+                    .filter(|(x, _)| *x > 0.0 && *x < 1.0),
+            )
+            .chain(std::iter::once((1.0, self.end_speed())));
+        for (at, speed) in knots {
+            if at <= from || at >= to {
+                continue;
+            }
+            let mapped = (at - from) / span;
+            if mapped <= 0.0 || mapped >= 1.0 || (at > last_old && mapped <= points.last()?.0) {
+                return None;
+            }
+            points.push((mapped, speed));
+            last_old = at;
+        }
+        points.push((1.0, self.boundary_speed(to, false)));
+        Some(Self { points })
+    }
+
+    /// Source consumption with constant endpoint-speed continuation outside
+    /// `0..=1`. Negative results are pre-roll before the old in-point.
+    pub fn consumed_extended(&self, x: f64) -> f64 {
+        if x < 0.0 {
+            x * self.start_speed()
+        } else if x > 1.0 {
+            self.consumed(1.0) + (x - 1.0) * self.end_speed()
+        } else {
+            self.consumed(x)
+        }
+    }
+
     /// Speed at `x`, a fraction of the clip's length.
     pub fn speed_at(&self, x: f64) -> f64 {
         let x = x.clamp(0.0, 1.0);
@@ -84,12 +164,15 @@ impl SpeedCurve {
         let mut area = 0.0;
         for pair in self.points.windows(2) {
             let (x0, v0) = pair[0];
-            let x1 = pair[1].0;
+            let (x1, v1) = pair[1];
             if x <= x0 {
                 break;
             }
+            if x1 <= x0 {
+                continue;
+            }
             let end = x.min(x1);
-            let v_end = self.speed_at(end);
+            let v_end = v0 + (v1 - v0) * ((end - x0) / (x1 - x0));
             area += (end - x0) * (v0 + v_end) / 2.0;
             if x <= x1 {
                 break;
@@ -124,6 +207,49 @@ impl SpeedCurve {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn windows_preserve_the_entire_source_map_including_steps_and_extension() {
+        for points in [
+            vec![(0.0, 2.0), (1.0, 2.0)],
+            vec![(0.0, 0.5), (0.4, 3.0), (1.0, 1.0)],
+            vec![
+                (0.0, 8.0),
+                (0.0, 0.5),
+                (0.4, 0.5),
+                (0.4, 3.0),
+                (1.0, 2.0),
+                (1.0, 9.0),
+            ],
+        ] {
+            let curve = SpeedCurve::new(&points).unwrap();
+            for (a, b) in [(0.0, 0.4), (0.4, 1.0), (0.123, 0.789), (-0.2, 1.3)] {
+                let window = curve.window(a, b).unwrap();
+                for step in 0..=200 {
+                    let x = f64::from(step) / 200.0;
+                    let actual = curve.consumed_extended(a) + (b - a) * window.consumed(x);
+                    let expected = curve.consumed_extended(a + (b - a) * x);
+                    assert!(
+                        (actual - expected).abs() < 5e-12,
+                        "{points:?}, {a}..{b}, at {x}: {actual} != {expected}"
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn invalid_or_collapsed_speed_windows_are_not_flattened() {
+        let curve = SpeedCurve::new(&[(0.0, 1.0), (0.5, 2.0), (1.0, 1.0)]).unwrap();
+        for (a, b) in [
+            (0.5, 0.5),
+            (1.0, 0.0),
+            (f64::NAN, 1.0),
+            (-f64::MAX, f64::MAX),
+        ] {
+            assert!(curve.window(a, b).is_none());
+        }
+    }
 
     #[test]
     fn a_flat_curve_is_a_constant_speed() {

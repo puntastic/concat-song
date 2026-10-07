@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! The document model: what a Concat project *is*.
 //!
@@ -1368,34 +1369,72 @@ pub struct Clip {
 
 /// One property's keys, as `(at, value, ease)` over `0..=1` of an old
 /// length, re-anchored to the window `(a, b)` of that length; see
-/// [`Clip::rewindow_keys`]. `value_at` is the ride over the old length.
+/// [`Clip::rewindow_keys`]. Core owns exact easing subdivision for this window.
 fn rewindow(
     keys: impl Iterator<Item = (f64, f64, KeyEase)>,
     (a, b): (f64, f64),
-    value_at: impl Fn(f64) -> f64,
-) -> Vec<(f64, f64, KeyEase)> {
-    let keys: Vec<(f64, f64, KeyEase)> = keys.collect();
-    let span = b - a;
-    let mut out = Vec::with_capacity(keys.len() + 2);
-    let before = keys.iter().any(|(at, ..)| *at < a - KEY_EPSILON);
-    if before {
-        out.push((0.0, value_at(a), KeyEase::LINEAR));
+) -> Result<Vec<(f64, f64, KeyEase)>, &'static str> {
+    let ride = concat_core::animate::Track::new(
+        keys.map(|(at, value, ease)| concat_core::animate::Key {
+            at,
+            value,
+            ease: ease.into(),
+        })
+        .collect(),
+    );
+    let window = ride
+        .window(a, b)
+        .ok_or("The retained easing interval cannot be represented with finite, distinct keys.")?;
+    Ok(window
+        .keys()
+        .iter()
+        .map(|key| {
+            let ease = key.ease;
+            (
+                key.at,
+                key.value,
+                KeyEase([ease.x1, ease.y1, ease.x2, ease.y2]),
+            )
+        })
+        .collect())
+}
+
+// Join geometry, not an interactive key replacement: close but distinct keys
+// survive. At a shared boundary the incoming ease belongs to the LEFT piece.
+// The right piece's first key is an anchor, not a request to restart that ease.
+// Duplicate-time steps within the right piece retain their order.
+fn join_key_runs(
+    mut held: Vec<(f64, f64, KeyEase)>,
+    incoming: Vec<(f64, f64, KeyEase)>,
+) -> Result<Vec<(f64, f64, KeyEase)>, &'static str> {
+    if incoming
+        .iter()
+        .any(|(at, value, _)| !at.is_finite() || !(0.0..=1.0).contains(at) || !value.is_finite())
+    {
+        return Err("A joined key cannot be represented at a finite position and value.");
     }
-    let mut first_after: Option<KeyEase> = None;
-    for (at, value, ease) in &keys {
-        if *at < a - KEY_EPSILON {
-            continue;
+    let mut index = 0;
+    while index < incoming.len() {
+        let mut end = index + 1;
+        while end < incoming.len() && incoming[end].0 == incoming[index].0 {
+            end += 1;
         }
-        if *at > b + KEY_EPSILON {
-            first_after.get_or_insert(*ease);
-            continue;
+        let first = incoming[index];
+        if let Some(left) = held.iter().rfind(|key| key.0 == first.0) {
+            let rounding = 64.0 * f64::EPSILON * left.1.abs().max(first.1.abs()).max(1.0);
+            if (left.1 - first.1).abs() > rounding {
+                return Err(
+                    "The pieces disagree at a shared key boundary; this join cannot preserve both rides.",
+                );
+            }
+            held.extend_from_slice(&incoming[index + 1..end]);
+        } else {
+            held.extend_from_slice(&incoming[index..end]);
         }
-        out.push((((at - a) / span).clamp(0.0, 1.0), *value, *ease));
+        index = end;
     }
-    if let Some(ease) = first_after {
-        out.push((1.0, value_at(b), ease));
-    }
-    out
+    held.sort_by(|a, b| a.0.total_cmp(&b.0));
+    Ok(held)
 }
 
 impl Default for Clip {
@@ -1681,57 +1720,67 @@ impl Clip {
     ///
     /// A key outside the window is replaced by one on the window's edge
     /// carrying the ride's value there, so the piece plays exactly what
-    /// the whole played over that stretch, and a merge of the pieces gets
-    /// the ride back.
-    pub fn rewindow_keys(&mut self, old: f64, from: f64, to: f64) {
-        let sane = old.is_finite() && old > 0.0 && to.is_finite() && to > from;
-        if !sane {
-            return;
+    /// the whole played over that stretch. Easing is subdivided, not restarted
+    /// over each piece. A boundary outside a property's allowed key range (or
+    /// one that cannot be finitely represented) is an explicit error; this
+    /// method leaves the clip unchanged rather than letting tidy flatten it.
+    pub fn rewindow_keys(&mut self, old: f64, from: f64, to: f64) -> Result<(), &'static str> {
+        if !old.is_finite() || old <= 0.0 || !from.is_finite() || !to.is_finite() || to <= from {
+            return Err("The keyframe window must be a finite, positive interval.");
         }
         let (a, b) = (from / old, to / old);
+        let mut staged = self.clone();
+        staged.keys.clear();
         for property in KeyProperty::ALL {
-            if !self.is_keyed(property) {
-                continue;
-            }
-            let ride = self.track_on(property);
-            let constant = self.constant(property);
-            let keys: Vec<ClipKey> = self.keys_on(property).copied().collect();
             let windowed = rewindow(
-                keys.iter().map(|key| (key.at, key.value, key.ease)),
+                self.keys_on(property)
+                    .map(|key| (key.at, key.value, key.ease)),
                 (a, b),
-                |x| ride.value_at(x, constant),
-            );
-            self.keys.retain(|key| key.property != property);
-            self.keys
-                .extend(windowed.into_iter().map(|(at, value, ease)| ClipKey {
+            )?;
+            for (at, value, ease) in windowed {
+                use ranges::*;
+                let bounded = match property {
+                    KeyProperty::Scale => value.clamp(MIN_SCALE, MAX_SCALE),
+                    KeyProperty::Opacity => value.clamp(0.0, 1.0),
+                    KeyProperty::Volume => value.max(0.0),
+                    KeyProperty::OffsetX | KeyProperty::OffsetY => {
+                        value.clamp(-MAX_OFFSET, MAX_OFFSET)
+                    }
+                    KeyProperty::Rotation => value,
+                };
+                // Tidy would otherwise silently change the derived ride.
+                // Only absorb floating-point roundoff at a legal boundary.
+                if (bounded - value).abs() > 64.0 * f64::EPSILON * value.abs().max(1.0) {
+                    return Err(
+                        "The retained easing interval requires a key value outside this property's representable range.",
+                    );
+                }
+                staged.keys.push(ClipKey {
                     property,
                     at,
-                    value,
+                    value: bounded,
                     ease,
-                }));
+                });
+            }
         }
-        for link in self.filters.iter_mut().chain(self.video_effects.iter_mut()) {
-            let names: Vec<String> = link.keys.keys().cloned().collect();
-            for name in names {
-                let ride = link.track_on(&name);
-                let constant = link.params.get(&name).copied().unwrap_or(0.0);
-                let keys: Vec<ParamKey> = link.keys_on(&name).to_vec();
-                let windowed = rewindow(
-                    keys.iter().map(|key| (key.at, key.value, key.ease)),
-                    (a, b),
-                    |x| ride.value_at(x, constant),
-                );
-                link.keys.insert(
-                    name,
-                    windowed
-                        .into_iter()
-                        .map(|(at, value, ease)| ParamKey { at, value, ease })
-                        .collect(),
-                );
+        for link in staged
+            .filters
+            .iter_mut()
+            .chain(staged.video_effects.iter_mut())
+        {
+            for keys in link.keys.values_mut() {
+                let windowed =
+                    rewindow(keys.iter().map(|key| (key.at, key.value, key.ease)), (a, b))?;
+                *keys = windowed
+                    .into_iter()
+                    .map(|(at, value, ease)| ParamKey { at, value, ease })
+                    .collect();
             }
             link.sort_keys();
         }
-        self.sort_keys();
+        staged.sort_keys();
+        *self = staged;
+        Ok(())
     }
 
     /// Takes on the keys of `piece`, a clip that sat `offset` seconds
@@ -1739,17 +1788,38 @@ impl Clip {
     /// keys lands at the same instant of the picture it marked, now
     /// measured over this clip's `duration`. Effect keys come across where
     /// the effect at the same position of the chain is the same effect.
-    pub fn absorb_keys(&mut self, piece: &Clip, offset: f64) {
-        let sane = self.duration.is_finite() && self.duration > 0.0;
-        if !sane {
-            return;
+    /// A shared boundary retains the left piece's incoming ease. Conflicting
+    /// boundary values are refused without changing either ride; nearby but
+    /// distinct keys are never combined using an interactive tolerance.
+    pub fn absorb_keys(&mut self, piece: &Clip, offset: f64) -> Result<(), &'static str> {
+        if !self.duration.is_finite() || self.duration <= 0.0 || !offset.is_finite() {
+            return Err("The joined key interval must be finite and positive.");
         }
-        for key in &piece.keys {
-            let at = (offset + key.at * piece.duration) / self.duration;
-            self.set_key(key.property, at, key.value, key.ease);
+        let at = |x| (offset + x * piece.duration) / self.duration;
+        let mut staged = self.clone();
+        for property in KeyProperty::ALL {
+            let mine = self
+                .keys_on(property)
+                .map(|key| (key.at, key.value, key.ease))
+                .collect();
+            let theirs = piece
+                .keys_on(property)
+                .map(|key| (at(key.at), key.value, key.ease))
+                .collect();
+            let joined = join_key_runs(mine, theirs)?;
+            staged.keys.retain(|key| key.property != property);
+            staged
+                .keys
+                .extend(joined.into_iter().map(|(at, value, ease)| ClipKey {
+                    property,
+                    at,
+                    value,
+                    ease,
+                }));
         }
-        for (mine, theirs) in self.filters.iter_mut().zip(piece.filters.iter()).chain(
-            self.video_effects
+        for (mine, theirs) in staged.filters.iter_mut().zip(piece.filters.iter()).chain(
+            staged
+                .video_effects
                 .iter_mut()
                 .zip(piece.video_effects.iter()),
         ) {
@@ -1757,12 +1827,29 @@ impl Clip {
                 continue;
             }
             for (name, run) in &theirs.keys {
-                for key in run {
-                    let at = (offset + key.at * piece.duration) / self.duration;
-                    mine.set_key(name, at, key.value, key.ease);
-                }
+                let held = mine
+                    .keys_on(name)
+                    .iter()
+                    .map(|key| (key.at, key.value, key.ease))
+                    .collect();
+                let incoming = run
+                    .iter()
+                    .map(|key| (at(key.at), key.value, key.ease))
+                    .collect();
+                let joined = join_key_runs(held, incoming)?;
+                mine.keys.insert(
+                    name.clone(),
+                    joined
+                        .into_iter()
+                        .map(|(at, value, ease)| ParamKey { at, value, ease })
+                        .collect(),
+                );
             }
+            mine.sort_keys();
         }
+        staged.sort_keys();
+        *self = staged;
+        Ok(())
     }
 
     /// Drops keys that are not finite or not in `0..=1`, then orders them.

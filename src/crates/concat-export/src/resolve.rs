@@ -1,13 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! The flattened clip list becoming the engine's timeline.
 //!
 //! `flatten` turns the document into `ExportClip`s; this turns those into
 //! a `concat_core::Timeline` plus the per-clip facts the decoders and the
 //! compositor need that the engine's model has no field for. It is the
-//! one place a document value stops being approximate: every time is
-//! quantised to the frame grid here, and every chain, pass, size and mask
+//! one place document times become rational seconds. Clip spans and source
+//! positions retain subframe offsets; only output sampling and frame-shaped
+//! transition ramps use the output frame grid.
+//! Every chain, pass, size and mask
 //! a clip renders with is decided here. `render` and the preview read
 //! what this builds and never look at an `ExportClip` again.
 
@@ -200,7 +203,7 @@ pub(crate) fn build_timeline(
     rate: FrameRate,
     visible: &[&ExportClip],
     transitions: Vec<TransitionSpan>,
-) -> BuiltTimeline {
+) -> Result<BuiltTimeline, String> {
     let mut timeline = Timeline::new(request.width, request.height, rate);
     let mut stills = std::collections::HashSet::new();
     let mut decode_sizes: HashMap<ClipId, (u32, u32)> = HashMap::new();
@@ -220,13 +223,23 @@ pub(crate) fn build_timeline(
         .collect();
 
     for clip in visible {
-        // Quantise to the frame grid on the way in. The UI works in f64
-        // seconds; the engine works in exact rationals, and this is the seam
-        // where a value stops being approximate.
-        let start = quantise(clip.start, rate);
-        let duration = quantise(clip.duration, rate);
-        if duration.is_zero() {
+        if clip.duration <= 0.0 {
             continue;
+        }
+        // Quantize the two absolute endpoints, never start and length
+        // independently. Adjacent pieces then share one half-open boundary,
+        // including when that boundary lies beside an output frame instant.
+        // Source and key curves use this same rational span. Their clocks
+        // still have microsecond precision, not arbitrary f64 equality.
+        let start = endpoint_time(clip.start).ok_or_else(|| {
+            "The clip start cannot be represented as nonnegative rational seconds.".to_owned()
+        })?;
+        let end = endpoint_time(clip.start + clip.duration).ok_or_else(|| {
+            "The clip end cannot be represented as nonnegative rational seconds.".to_owned()
+        })?;
+        let duration = end - start;
+        if duration <= Rational::ZERO {
+            return Err("The clip interval collapses at microsecond precision.".to_owned());
         }
 
         // A layer has no pixels to decode: it is a treatment over the
@@ -248,7 +261,12 @@ pub(crate) fn build_timeline(
         }
 
         let mut engine_clip = Clip::new(MediaRef::new(&clip.path), start, duration);
-        engine_clip.source_start = quantise(clip.source_start, rate);
+        engine_clip.source_start = Rational::approximate(clip.source_start)
+            .filter(|source| *source >= Rational::ZERO)
+            .ok_or_else(|| {
+                "The source position cannot be represented as a nonnegative rational time."
+                    .to_owned()
+            })?;
         engine_clip.hold = clip.hold;
         // The same clamp the audio path applies, so a 2x clip means the same
         // thing to picture and sound. A still has no meaningful rate.
@@ -306,7 +324,7 @@ pub(crate) fn build_timeline(
         }
     }
 
-    BuiltTimeline {
+    Ok(BuiltTimeline {
         timeline,
         stills,
         decode_sizes,
@@ -320,7 +338,7 @@ pub(crate) fn build_timeline(
         reveal_maps,
         cutouts,
         highlight,
-    }
+    })
 }
 
 /// The crop and flips the frame plan draws for a clip.
@@ -445,4 +463,22 @@ pub(crate) fn fitted_size(
 
 pub(crate) fn quantise(seconds: f64, rate: FrameRate) -> Rational {
     rate.time_of_frame((seconds * rate.fps().as_f64()).round().max(0.0) as i64)
+}
+
+/// One absolute endpoint on the microsecond clock. Canonicalize floating
+/// arithmetic residue at half-tick ties, so `start + (cut - start)` and
+/// `cut` do not choose opposite sides of the same represented boundary.
+pub(crate) fn endpoint_time(seconds: f64) -> Option<Rational> {
+    if !seconds.is_finite() || seconds < 0.0 {
+        return None;
+    }
+    let mut ticks = seconds * 1_000_000.0;
+    if !ticks.is_finite() || ticks >= i64::MAX as f64 {
+        return None;
+    }
+    let half = (ticks - 0.5).round() + 0.5;
+    if (ticks - half).abs() <= 4.0 * f64::EPSILON * ticks.abs().max(1.0) {
+        ticks = half;
+    }
+    Rational::checked_new(ticks.round() as i128, 1_000_000)
 }

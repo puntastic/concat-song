@@ -673,10 +673,10 @@
     "docs/known-engine-limits.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "991c2b5321dcdafcd4fdbe893cfd84a981ae4a69",
+      "git_blob": "c8c3de5f6747ccff8a32c910ee60c233a3b0cc34",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Agent-operated engine foundation: remove conventional GUI, preserve presentation hooks, isolate fork state and record modifications.",
+      "summary": "Preserve retained clip time maps and eased keys through surgery and export planning",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -697,6 +697,16 @@
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
       "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
+    "docs/source-preserving-surgery.md": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "0b87d7cbb3f77d17b2c28fe1c82268a3ed57ea43",
+      "mode": "100644",
+      "notice": "central:non-commentable-or-prose",
+      "summary": "Preserve retained clip time maps and eased keys through surgery and export planning",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1150,6 +1160,56 @@
       "upstream_blob": "2daea09f6367efa24f457c928310524bba1b7912",
       "upstream_mode": "100644"
     },
+    "src/crates/concat-core/src/animate.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "50d48944ffcb88db8ff7fcf79567e8d85a36b991",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "88ede256e93a9eb7c48bf70b9d9acb19a5918391",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-core/src/retime.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "7bf4c8ec15d906b0b8f9184009ef57c1a521e9cb",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "238de2b4c5db7db176335be4a146dedf048dec25",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/lib.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "9cc7588aef2827ed450368a90b0aa6a5e4e14ccf",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "03ecf01e20442e016719087be28d3598a3896a08",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/resolve.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "99304f3b6dc3cddab2bc90ad42c57aea4e9c70ab",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": "55c44f64374c0aef37c122c60eba5e6f4d86b1ec",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-export/src/surgery_tests.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "e96d38defdb105dffef3b5c3b0963e590e6878c4",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": null,
+      "upstream_mode": null
+    },
     "src/crates/concat-host/Cargo.toml": {
       "change": "modified",
       "changed_on": "2026-10-07",
@@ -1540,15 +1600,65 @@
       "upstream_blob": null,
       "upstream_mode": null
     },
+    "src/crates/concat-project/src/commands/clips.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "e76976bbdb86b57a09b670fe8747a8f938bb4e12",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": "dd75582b8190efecc340fdd0ad36ea5ca4a678d7",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/commands/mod.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "6d312166fc3e4f51fc73ce6ab5089b8a25c2f097",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "ea91e32d87d25c518940665e208698e38bcf784f",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-project/src/lib.rs": {
       "change": "modified",
       "changed_on": "2026-10-07",
-      "git_blob": "8826de0b3119e0d1f07e2168af465bd8b0788e17",
+      "git_blob": "31764cd7a45f6724a27301282d912f73ef789681",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
       "upstream_blob": "a9f879e81631a9540ea4b91c4d6085c06b30c1db",
       "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/model.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "0d238942c9b6e770c8de868a969806c87ceaf0f9",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": "884b649d67d3be05acd67ed94c5c0e096b8c4b95",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/speed.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "1d9f88779bbfb1131109cebc31dcc5e9f91b8941",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear source and keyed intervals across split, trim, freeze and export planning",
+      "upstream_blob": "a483b68c7d6a633f860bd81ff3ec22c3605b74d6",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-project/src/tests/surgery.rs": {
+      "change": "added",
+      "changed_on": "2026-10-07",
+      "git_blob": "d61f7b9237598fd672f97688b8286b8888fa7e2e",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Preserve nonlinear timing and exact eased joins, with shared rational interval endpoints",
+      "upstream_blob": null,
+      "upstream_mode": null
     },
     "src/crates/concat-text/src/lib.rs": {
       "change": "modified",
@@ -3052,7 +3162,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "143db128c87fe24e5443b5106b0c13a2700b1b5fa84204d148004bf9985a8000",
+  "index_sha256": "9ca5f4ee3f931c29a1d0cf85ad9d12340bb3cc168164b7d2285df85514ea156d",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,
