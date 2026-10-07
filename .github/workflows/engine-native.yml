@@ -196,7 +196,7 @@ jobs:
           # Never turn a failed, timed-out, missing, or empty preflight into
           # a passing workspace run. Only this already-passed test is filtered.
           test "$CARD_PREFLIGHT_VERIFIED" = true
-          cargo test --locked --workspace --exclude concat-speech -j 1 -- --show-output \
+          cargo test --locked --workspace --exclude concat-speech -j 1 -- --nocapture \
             --skip cards::tests::every_card_draws_and_shows_its_package_at_work \
             2>&1 | tee "$RUNNER_TEMP/engine-tests.log"
 

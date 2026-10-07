@@ -53,10 +53,10 @@
     ".github/workflows/engine-native.yml": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "4ce1fa97dffd52240744071605302f51e7dec69b",
+      "git_blob": "e494512ce402d0fcd3f4072b0658fc3751e897c4",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -713,10 +713,10 @@
     "docs/windows-build.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "7d7b87f8054ffeaebceac52691af1b3bd982d67c",
+      "git_blob": "89248ab03543adc571e0c7d4ed65675c339291df",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Qualify Windows graphics paths and preserve Gaussian rendering on software adapters",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1180,6 +1180,16 @@
       "upstream_blob": "238de2b4c5db7db176335be4a146dedf048dec25",
       "upstream_mode": "100644"
     },
+    "src/crates/concat-effects/packages/concat.bloom-pulse/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "72cbb682bdb6a7f57bccbc26d2cdc42d8cfbafd1",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Integrate qualified software rendering and export diagnostics with paced source-time repair",
+      "upstream_blob": "ec7e9f8ede3a86247c11cca598560b1691c0c07f",
+      "upstream_mode": "100644"
+    },
     "src/crates/concat-effects/packages/concat.gaussian-blur/effect.wgsl": {
       "change": "modified",
       "changed_on": "2026-10-07",
@@ -1188,6 +1198,16 @@
       "notice": "inline",
       "summary": "Integrate the qualified headless foundation with source-preserving clip surgery",
       "upstream_blob": "6255e4601312a2c5537953f547c57b0bfa1a42d9",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-effects/packages/concat.glow/effect.wgsl": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "560cfb5dfd8b2936d53413b9dc2842876498e20a",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Integrate qualified software rendering and export diagnostics with paced source-time repair",
+      "upstream_blob": "86c1020a0883a388dcc68b519b88261afd41a61a",
       "upstream_mode": "100644"
     },
     "src/crates/concat-export/src/lib.rs": {
@@ -1288,6 +1308,16 @@
       "notice": "central:deleted",
       "summary": "Agent-only engine/API foundation and fork modification-notice process",
       "upstream_blob": "0a00e5e70564d713dc36cc723223112db55885d2",
+      "upstream_mode": "100644"
+    },
+    "src/crates/concat-host/tests/export.rs": {
+      "change": "modified",
+      "changed_on": "2026-10-07",
+      "git_blob": "eaee9a4063b1e20e3a41697cea9450ea49bedeb1",
+      "mode": "100644",
+      "notice": "inline",
+      "summary": "Qualify tiny-image software effects and hardware-preference fallback without dropping output checks",
+      "upstream_blob": "d08af09f696871b0227a8ddbb164f08914c5c85a",
       "upstream_mode": "100644"
     },
     "src/crates/concat-host/text-presets/concat.atomic/preset.toml": {
@@ -1693,7 +1723,7 @@
     "src/crates/concat-render/src/gpu/tests.rs": {
       "change": "modified",
       "changed_on": "2026-10-07",
-      "git_blob": "862a84435abade59ba8f58edec257953fc144e99",
+      "git_blob": "5b67d6941bbe981e0bcd52593fc623bfcb52252a",
       "mode": "100644",
       "notice": "inline",
       "summary": "Integrate the qualified headless foundation with source-preserving clip surgery",
@@ -3202,7 +3232,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "0a0dd608616c1c53a126fc053421086d4926b27017b20457438db4238034474c",
+  "index_sha256": "6d44cffb9135a1cf33083fc582a8ce8fd67e9022d47c19205d091ad37a03ab1f",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,
