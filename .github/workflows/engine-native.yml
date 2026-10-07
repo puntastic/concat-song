@@ -21,6 +21,10 @@ env:
   FFMPEG_STEM: ffmpeg-n8.1.3-14-g330caae0c1
   FFMPEG_LINUX_SHA256: a6d0ea7dfef6ef85d86b8acf1c0a2d5288a05bac42c2cb16914e26830da3d344
   FFMPEG_WINDOWS_SHA256: 751c56e0b63426426487ab4048031b0166281c59c0a7e33ef7dd7428495e1d8a
+  # Match the libclang input used by the successful local MSVC check.
+  # This wheel is extracted only; no pip install or runner-wide LLVM change.
+  LIBCLANG_WINDOWS_URL: https://files.pythonhosted.org/packages/0b/2d/3f480b1e1d31eb3d6de5e3ef641954e5c67430d5ac93b7fa7e07589576c7/libclang-18.1.1-py2.py3-none-win_amd64.whl
+  LIBCLANG_WINDOWS_SHA256: 4dd2d3b82fab35e2bf9ca717d7b63ac990a3519c7e312f19fa8e86dcc712f7fb
   ORT_VERSION: 1.28.0
   ORT_LINUX_SHA256: a3e1b79d7bb1bf09696ce675f49e4064e6c81f6202b8225624fff0e93f8d6407
   SHERPA_VERSION: 1.13.7
@@ -49,7 +53,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: src
-          key: native-${{ runner.os }}-${{ inputs.speech }}-1.93.0
+          key: native-${{ runner.os }}-${{ inputs.speech }}-1.93.0${{ runner.os == 'Windows' && '-libclang18.1.1' || '' }}
 
       - name: Linux native libraries and software GPU
         if: runner.os == 'Linux'
@@ -88,17 +92,24 @@ jobs:
             echo "LD_LIBRARY_PATH=$PWD/ffmpeg-dev/lib:$PWD/$stem/lib"
           } >> "$GITHUB_ENV"
 
-      - name: Windows FFmpeg and LLVM
+      - name: Windows FFmpeg and pinned libclang
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-          $llvm = 'C:\Program Files\LLVM\bin'
-          if (-not (Test-Path "$llvm\libclang.dll")) {
-            throw 'The Windows runner must provide LLVM/libclang for FFmpeg bindgen.'
+          # The first CI run overflowed ffmpeg-sys's build-script main-thread
+          # stack with runner LLVM 20.1.8. Align this one input with the local
+          # passing build before changing stack sizes or any test behavior.
+          curl.exe -fsSL --retry 3 --retry-all-errors -o libclang.whl "$env:LIBCLANG_WINDOWS_URL"
+          if ($LASTEXITCODE -ne 0) { throw 'libclang download failed' }
+          if ((Get-FileHash libclang.whl -Algorithm SHA256).Hash.ToLowerInvariant() -ne $env:LIBCLANG_WINDOWS_SHA256) {
+            throw 'libclang digest mismatch'
           }
-          "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append
-          $llvm | Out-File -FilePath $env:GITHUB_PATH -Append
+          python -m zipfile -e libclang.whl libclang-dev
+          if ($LASTEXITCODE -ne 0) { throw 'libclang extraction failed' }
+          $libclang = Join-Path $PWD 'libclang-dev\libclang-18.1.1.data\platlib\clang\native'
+          if (-not (Test-Path "$libclang\libclang.dll")) { throw 'Unexpected libclang wheel layout' }
+          "LIBCLANG_PATH=$libclang" | Out-File -FilePath $env:GITHUB_ENV -Append
           curl.exe -fsSL --retry 3 --retry-all-errors -o ffmpeg.zip "$env:FFMPEG_RELEASE/$env:FFMPEG_STEM-win64-gpl-shared-8.1.zip"
           if ($LASTEXITCODE -ne 0) { throw 'FFmpeg download failed' }
           if ((Get-FileHash ffmpeg.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $env:FFMPEG_WINDOWS_SHA256) {

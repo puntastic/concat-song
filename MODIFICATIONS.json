@@ -53,10 +53,10 @@
     ".github/workflows/engine-native.yml": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "29340a74b1c8253e9c0563643103a9775c8282b4",
+      "git_blob": "afb91c430c6adf71888c69024f3ae33e0be7fce2",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Agent-only engine/API foundation and fork modification-notice process",
+      "summary": "Pin Windows CI libclang to the checksum-verified local build input.",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -3052,7 +3052,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "9e4828124039e459ffeed5edd11f8fdcda3eae6e3b8708c884d40110407b0342",
+  "index_sha256": "4c2e34150c4684793e308f36031d2e17342e53e6588f03fa6463c7028738fcab",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,
