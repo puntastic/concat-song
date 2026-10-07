@@ -8,6 +8,16 @@ system PATH edits, downloads or installers. Its default cache is
 `-LibclangDir` can select another prepared location. Use a fresh PowerShell
 process rather than dot-sourcing it into a long-lived shell.
 
+Compiler discovery and runtime DLL search are kept separate. The wrapper takes
+the VS development environment's INCLUDE/LIB/toolchain variables but restores
+the caller's PATH plus the explicitly selected Rust, FFmpeg and CMake paths.
+In the first local validation, carrying the full VS/SDK PATH into rendering
+caused access violations; the same render binary passed all86 tests with the
+runtime path restored. Several graphics-compiler DLL versions were present in
+those SDK paths, so this is an environment repair, not evidence of a fixed
+renderer algorithm or an isolated defect in one named DLL. Never edit the
+machine-wide PATH to make this helper work.
+
 The first local check used:
 
 - Rust1.93.0 MSVC under `cargo/` and `rustup/`; official rustup installer SHA256

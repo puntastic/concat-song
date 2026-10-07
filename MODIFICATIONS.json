@@ -703,10 +703,10 @@
     "docs/windows-build.md": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "feb7f87349fd9cc359839d7de08cc36a9d5ec1cc",
+      "git_blob": "17d695baef9242aac55259846227a313dc6b3a17",
       "mode": "100644",
       "notice": "central:non-commentable-or-prose",
-      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "summary": "Keep compiler discovery separate from graphics runtime DLL search.",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -1013,10 +1013,10 @@
     "scripts/with-engine-env.ps1": {
       "change": "added",
       "changed_on": "2026-10-07",
-      "git_blob": "609f5bc26395dfa1cbdad3b9038f3da1e8c6c0bd",
+      "git_blob": "361873256796dd711b333728b1cceba3e9103245",
       "mode": "100644",
       "notice": "inline",
-      "summary": "Extract agent-operated engine; remove conventional GUI; preserve presentation hooks and dated fork notices.",
+      "summary": "Keep compiler discovery separate from graphics runtime DLL search.",
       "upstream_blob": null,
       "upstream_mode": null
     },
@@ -3052,7 +3052,7 @@
     }
   },
   "fork_repository": "https://github.com/puntastic/concat-song",
-  "index_sha256": "4c2e34150c4684793e308f36031d2e17342e53e6588f03fa6463c7028738fcab",
+  "index_sha256": "143db128c87fe24e5443b5106b0c13a2700b1b5fa84204d148004bf9985a8000",
   "license": "AGPL-3.0-or-later",
   "recorded_on": "2026-10-07",
   "schema_version": 1,

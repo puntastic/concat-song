@@ -20,6 +20,11 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
+# Keep the caller's runtime search path separate from compiler discovery.
+# VS/SDK PATH entries can supply different graphics DLLs than the OS and caused
+# a reproducible renderer-process failure in this setup. INCLUDE/LIB and the
+# toolchain discovery variables remain available after Enter-VsDevShell.
+$runtimePath = $env:PATH
 $env:CARGO_HOME = Join-Path $BuildRoot 'cargo'
 $env:RUSTUP_HOME = Join-Path $BuildRoot 'rustup'
 $env:CARGO_TARGET_DIR = Join-Path $BuildRoot 'target'
@@ -53,7 +58,7 @@ if (-not $CoreOnly) {
     Enter-VsDevShell -VsInstallPath $vs -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64' | Out-Null
     $env:FFMPEG_DIR = $FfmpegDir
     $env:LIBCLANG_PATH = $LibclangDir
-    $env:PATH = (Join-Path $env:CARGO_HOME 'bin') + ';' + (Join-Path $FfmpegDir 'bin') + ';' + (Join-Path $vs 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin') + ';' + $env:PATH
+    $env:PATH = (Join-Path $env:CARGO_HOME 'bin') + ';' + (Join-Path $FfmpegDir 'bin') + ';' + (Join-Path $vs 'Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin') + ';' + $runtimePath
 }
 
 Push-Location (Join-Path $repo 'src')
