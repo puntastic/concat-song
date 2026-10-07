@@ -28,10 +28,35 @@ adapter numerical oracles passed, and the entire software effect-card test
 completed locally. This supports the scoped workaround, not a proven root cause
 inside a particular Windows driver or compiler.
 
+The same full-height/query pattern was then reproduced in Glow and Bloom Pulse
+at tiny intermediate sizes. Their equivalent substitutions preserve the screen,
+pulse, alpha and sampling formulas; manifest invariants and fixture/HDR/alpha
+checks cover both software and default adapters. The complete package-defaults
+software sweep now passes. The long scripted editing/export scenario also
+completed locally on WARP with all output assertions retained. These local
+results do not turn an earlier hosted timeout into a pass.
+
 Windows CI runs the full effect-card test as a required, logged preflight.
 Only a verified pass permits the remaining workspace suite to filter that
 already-run test. A timeout, unavailable required adapter or failed preflight
 leaves validation incomplete; it does not turn into a skip or a green remainder.
+
+Hardware decoding is a separate capability from the hardware/software graphics
+adapter. `HwDevice::platform_default()` selects a backend by operating system;
+it does not probe whether a particular device can decode a particular stream.
+The export preference test retains its complete picture/sound checks when the
+decoder takes its documented software fallback, and reports the actual route.
+Set `CONCAT_REQUIRE_HARDWARE_DECODE=1` for a run that must demonstrate hardware
+decoding. `CONCAT_REQUIRE_GPU` still requires rendering capability; it does not
+turn a software CI runner into a hardware-codec qualification machine.
+
+Test-only `CONCAT_TEST_SOFTWARE_GPU`, `CONCAT_TEST_SOFTWARE_CARDS` and
+`CONCAT_TEST_SOFTWARE_EXPORT` selectors allow the renderer, cached effect cards
+and scripted export cases to be qualified on a software adapter even when the
+host also has a physical GPU. Explicit software requests fail when no adapter
+is available. They do not change production adapter selection. Export scenarios
+log preparation, rendering and readback boundaries; Windows CI exposes output
+as it happens so an unrelated long-running case cannot hide a completed failure.
 
 The first local check used:
 

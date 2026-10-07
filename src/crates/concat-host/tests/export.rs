@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // SPDX-FileCopyrightText: 2026 Jareer and Concat contributors
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 
 //! Exporting a project end to end, the way the window does it: media
 //! imported by probing, every edit applied as a command through a session,
@@ -563,6 +564,7 @@ impl Studio {
     fn export_at(&mut self, label: &str, rate: Option<(i64, i64)>) -> Exported {
         self.count += 1;
         let label = format!("{:02} {label}", self.count).replace('/', "-");
+        eprintln!("export scenario: {label}; preparing");
         let settings = self.session.settings();
         let spec = ExportSpec {
             output: self
@@ -591,8 +593,20 @@ impl Studio {
             request.rate_den = den;
         }
         let cancel = AtomicBool::new(false);
-        let written = export::run(&request, &cancel, |_| {})
+        let software = std::env::var_os("CONCAT_TEST_SOFTWARE_EXPORT").is_some();
+        let compositor = software.then(|| {
+            let gpu = export::WgpuCompositor::software()
+                .expect("explicit software-export qualification requires an adapter");
+            eprintln!(
+                "export scenario: {label}; software adapter {:?}",
+                gpu.adapter_info()
+            );
+            gpu
+        });
+        eprintln!("export scenario: {label}; rendering");
+        let written = export::run_on(&request, compositor, &cancel, |_| {})
             .unwrap_or_else(|error| panic!("{label}: the export failed: {error}"));
+        eprintln!("export scenario: {label}; rendered, checking saved state");
 
         self.session.save(None).expect("saves the project");
         let reopened = Session::open(self.session.path(), self.session.settings())
@@ -602,11 +616,14 @@ impl Studio {
             "{label}: the project flattens differently after a save and reopen"
         );
 
-        Exported::read(
+        eprintln!("export scenario: {label}; reading output");
+        let result = Exported::read(
             &label,
             Path::new(&written),
             (request.rate_num, request.rate_den),
-        )
+        );
+        eprintln!("export scenario: {label}; complete");
+        result
     }
 }
 
@@ -1779,13 +1796,15 @@ fn the_edges_export_too() {
     exported.expect_tone(start + 4.0);
 }
 
-/// Hardware decode preferred, the way the app always sets it: the
-/// export decodes its sources on the platform's device where there is one
-/// and reads the same picture and sound back. The preference is the
-/// process's, so the other scenarios running alongside share it for the
+/// With the process hardware-decode preference enabled, the export
+/// follows the platform's hardware preference, or the decoder's
+/// supported software fallback, and reads the same picture and sound back.
+/// Platform selection alone does not establish device or codec support.
+/// Set CONCAT_REQUIRE_HARDWARE_DECODE for a hardware-qualified run.
+/// The preference is the process's, so other scenarios share it for the
 /// moment, and must not mind.
 #[test]
-fn an_export_decodes_on_the_hardware_when_preferred() {
+fn an_export_honors_the_hardware_preference_with_software_fallback() {
     struct Preferred;
     impl Drop for Preferred {
         fn drop(&mut self) {
@@ -1805,11 +1824,22 @@ fn an_export_decodes_on_the_hardware_when_preferred() {
     // stream the preference leaves on the CPU, which decodes it faster
     // (concat_media::hardware::hardware_wins).
     let sources = Sources::make_in(scratch.path(), VideoCodec::Hevc);
-    // A reader opened the way the engine opens them follows the preference
-    // onto the device, on a machine that has one.
+    // Follow the preference, then report the route actually serving this
+    // stream. A named platform backend is not a codec-support probe.
     let mut reader = Decoder::open(&sources.peek, &DecodeOptions::default()).expect("opens");
     reader.next_frame().expect("decodes").expect("a frame");
-    assert_eq!(reader.hardware(), HwDevice::platform_default());
+    let actual = reader.hardware();
+    let requested = HwDevice::platform_default();
+    if let Some(device) = actual {
+        assert_eq!(Some(device), requested, "the requested backend is honored");
+        eprintln!("decode coverage: hardware {device:?}");
+    } else {
+        eprintln!("decode coverage: software fallback; no hardware decode coverage claimed");
+    }
+    assert!(
+        std::env::var_os("CONCAT_REQUIRE_HARDWARE_DECODE").is_none() || actual.is_some(),
+        "hardware decoding was required but this stream is using software"
+    );
     drop(reader);
     let mut studio = Studio::new(scratch.path(), "Hardware", video(WIDTH, HEIGHT, 30, 1));
     let peek = studio.import(&sources.peek);

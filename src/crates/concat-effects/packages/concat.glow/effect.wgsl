@@ -1,3 +1,4 @@
+// Modified for concat-song on 2026-10-07; see FORK-NOTICE.md.
 struct Params { amount: f32 }
 
 // The picture's light spread wide - a Gaussian of sixteen of the layer's
@@ -42,7 +43,10 @@ fn across(uv: vec2<f32>) -> vec4<f32> {
 
 /// `across` weighed down its column about `uv`, in its own pixels.
 fn down(uv: vec2<f32>) -> vec4<f32> {
-    let rows = 1.0 / across_texel().y;
+    // `across` keeps the full frame height (see effect.toml). Using that
+    // uniform avoids the observed WARP stall when `down` is one pixel,
+    // without changing the reciprocal arithmetic, samples or weights.
+    let rows = 1.0 / (1.0 / frame.size.y);
     let s = SIGMA * rows / frame.size.y;
     let centre = uv.y * rows;
     let first = floor(centre - REACH * s - 0.5) + 0.5;

@@ -19,14 +19,26 @@ use crate::metrics::ssim;
 use crate::plan::{Crop, Transition, detached_clip};
 
 fn gpu() -> Option<WgpuCompositor> {
-    let compositor = WgpuCompositor::new();
-    if compositor.is_none() {
+    // Explicit test qualification only; normal application adapter selection
+    // and the test suite's default adapter preference remain unchanged.
+    let software = std::env::var_os("CONCAT_TEST_SOFTWARE_GPU").is_some();
+    let compositor = if software {
+        eprintln!("renderer tests: requesting software adapter");
+        WgpuCompositor::software()
+    } else {
+        WgpuCompositor::new()
+    };
+    if let Some(compositor) = &compositor {
+        if software {
+            eprintln!("renderer tests: adapter {:?}", compositor.adapter_info());
+        }
+    } else {
         // CI installs a software Vulkan driver so this suite runs there; a
         // machine that says it must run and has no adapter is a broken
         // setup, not a skip.
         assert!(
-            std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
-            "CONCAT_REQUIRE_GPU is set and no GPU adapter is usable"
+            !software && std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
+            "requested renderer test adapter is unavailable"
         );
         eprintln!("no usable GPU adapter; skipping");
     }
@@ -482,7 +494,14 @@ fn every_shader_package_renders_at_its_defaults() {
         );
         let mut treated = layer(source.clone());
         treated.effects = vec![pass];
+        let started = std::time::Instant::now();
+        eprintln!("renderer defaults: drawing {} at 4x4", package.id());
         let out = gpu.render(&plan(4, 4, vec![treated]));
+        eprintln!(
+            "renderer defaults: drew {} in {:?}",
+            package.id(),
+            started.elapsed()
+        );
         assert_eq!(out.pixels().len(), 4 * 4 * 4, "{}", package.id());
     }
 }
@@ -1468,10 +1487,24 @@ fn assert_direct_gaussian(gpu: &mut WgpuCompositor) {
 /// rather than silently accepting a parameter-dependent vertical shrink.
 #[test]
 fn gaussian_across_keeps_the_full_frame_height() {
-    let blur = concat_effects::Catalogue::builtin()
-        .get("concat.gaussian-blur")
+    assert_full_height_across("concat.gaussian-blur");
+}
+
+#[test]
+fn glow_across_keeps_the_full_frame_height() {
+    assert_full_height_across("concat.glow");
+}
+
+#[test]
+fn bloom_pulse_across_keeps_the_full_frame_height() {
+    assert_full_height_across("concat.bloom-pulse");
+}
+
+fn assert_full_height_across(id: &str) {
+    let package = concat_effects::Catalogue::builtin()
+        .get(id)
         .expect("a built-in");
-    let across = blur
+    let across = package
         .manifest
         .wgsl
         .as_ref()
@@ -1484,8 +1517,163 @@ fn gaussian_across_keeps_the_full_frame_height() {
         assert_eq!(
             shrink[1].trim().parse::<f64>(),
             Ok(1.0),
-            "Gaussian column assumes an unconditionally full-height across pass"
+            "{id}'s vertical kernel assumes an unconditionally full-height across pass"
         );
+    }
+}
+
+#[test]
+fn glow_preserves_probes_and_alpha_at_tiny_sizes() {
+    let Some(mut gpu) = gpu() else { return };
+    assert_glow_at_tiny_sizes(&mut gpu);
+}
+
+/// A 4x4 layer gives Glow a 1x4 across pass and a 1x1 down pass. WARP
+/// previously stalled there, even though the existing 8x8 probes passed.
+#[cfg(windows)]
+#[test]
+fn software_glow_handles_a_one_pixel_down_pass() {
+    let Some(mut gpu) = WgpuCompositor::software() else {
+        assert!(
+            std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
+            "CONCAT_REQUIRE_GPU is set and no software GPU adapter is usable"
+        );
+        eprintln!("no usable software GPU adapter; skipping");
+        return;
+    };
+    assert_glow_at_tiny_sizes(&mut gpu);
+}
+
+fn assert_glow_at_tiny_sizes(gpu: &mut WgpuCompositor) {
+    eprintln!("Glow probes: adapter {:?}", gpu.adapter_info());
+    let glow = concat_effects::Catalogue::builtin()
+        .get("concat.glow")
+        .expect("a built-in");
+    for side in [4, 8] {
+        for (n, probe) in glow.probes.iter().enumerate() {
+            let pass = glow.probe_pass(probe).expect("a shader");
+            assert_eq!(pass.stages[0].size(side, side), (side / 4, side));
+            assert_eq!(pass.stages[1].size(side, side), (side / 4, side / 4));
+            eprintln!("Glow probe: {side}x{side}, {}", probe.label(n));
+            let got = gpu
+                .probe(&[pass], probe.input, side, 0.0)
+                .expect("reads back");
+            probe
+                .check(got)
+                .unwrap_or_else(|error| panic!("Glow {side}x{side}, {}: {error}", probe.label(n)));
+        }
+        // A flat premultiplied picture blurs to itself. Check Glow's screen
+        // equation independently in doubles, including fully transparent
+        // colour and a half-transparent HDR highlight; output alpha stays put.
+        let pass = glow.trial_pass().expect("a shader");
+        let amount = pass.values["amount"] / 100.0;
+        for alpha in [0.0f32, 0.5] {
+            let colour = [2.0, 0.2, 0.1, alpha];
+            let mut want = colour;
+            for channel in 0..3 {
+                let base = f64::from(colour[channel]).powf(1.0 / 2.4);
+                let over = f64::from(colour[channel] * alpha).powf(1.0 / 2.4);
+                let limited = base.min(1.0);
+                let screened = 1.0 - (1.0 - limited) * (1.0 - over) + base - limited;
+                want[channel] = (base + (screened - base) * amount).powf(2.4) as f32;
+            }
+            let got = gpu
+                .probe(std::slice::from_ref(&pass), colour, side, 0.0)
+                .expect("reads back");
+            assert!(
+                near(got, want, 0.004),
+                "Glow {side}x{side}, alpha={alpha}: {got:?} vs {want:?}"
+            );
+        }
+    }
+}
+
+#[test]
+fn bloom_pulse_preserves_time_hdr_and_alpha_at_tiny_sizes() {
+    let Some(mut gpu) = gpu() else { return };
+    assert_bloom_pulse_at_tiny_sizes(&mut gpu);
+}
+
+/// The software defaults sweep previously reached Bloom Pulse and stalled
+/// when its 4x4 input produced a one-pixel down pass.
+#[cfg(windows)]
+#[test]
+fn software_bloom_pulse_handles_a_one_pixel_down_pass() {
+    let Some(mut gpu) = WgpuCompositor::software() else {
+        assert!(
+            std::env::var_os("CONCAT_REQUIRE_GPU").is_none(),
+            "CONCAT_REQUIRE_GPU is set and no software GPU adapter is usable"
+        );
+        eprintln!("no usable software GPU adapter; skipping");
+        return;
+    };
+    assert_bloom_pulse_at_tiny_sizes(&mut gpu);
+}
+
+fn assert_bloom_pulse_at_tiny_sizes(gpu: &mut WgpuCompositor) {
+    eprintln!("Bloom Pulse probes: adapter {:?}", gpu.adapter_info());
+    let bloom = concat_effects::Catalogue::builtin()
+        .get("concat.bloom-pulse")
+        .expect("a built-in");
+    for side in [4, 8] {
+        for (n, probe) in bloom.probes.iter().enumerate() {
+            let pass = bloom.probe_pass(probe).expect("a shader");
+            assert_eq!(pass.stages[0].size(side, side), (side / 4, side));
+            assert_eq!(pass.stages[1].size(side, side), (side / 4, side / 4));
+            eprintln!("Bloom Pulse probe: {side}x{side}, {}", probe.label(n));
+            let got = gpu
+                .probe(&[pass], probe.input, side, 0.0)
+                .expect("reads back");
+            probe.check(got).unwrap_or_else(|error| {
+                panic!("Bloom Pulse {side}x{side}, {}: {error}", probe.label(n))
+            });
+        }
+        // On a flat field the premultiplied highlight kernel returns its
+        // input. Evaluate the knee, pulse and screen independently in doubles
+        // at zero/nonzero times, varied speeds, amount zero/max, and alpha zero/half.
+        for (seconds, amount, speed, alpha) in [
+            (0.0, 50.0, 2.0, 0.5f32),
+            (0.75, 50.0, 2.0, 0.5),
+            (2.0, 50.0, 2.0, 0.5),
+            (0.75, 100.0, 5.0, 1.0),
+            (0.75, 0.0, 0.5, 0.5),
+            (0.75, 50.0, 2.0, 0.0),
+        ] {
+            let pass = bloom
+                .pass(
+                    &BTreeMap::from([("amount".to_owned(), amount), ("speed".to_owned(), speed)]),
+                    None,
+                )
+                .expect("a shader");
+            let colour = [2.0f32, 0.6, 0.05, alpha];
+            let display = colour[..3]
+                .iter()
+                .map(|&c| f64::from(c).powf(1.0 / 2.4))
+                .collect::<Vec<_>>();
+            let luminance = display[0] * 0.2126 + display[1] * 0.7152 + display[2] * 0.0722;
+            let knee = ((luminance - 0.55) / (1.0 - 0.55)).clamp(0.0, 1.0);
+            let bright = (knee * knee * (3.0 - 2.0 * knee)).powf(2.4);
+            let pulse = 0.6 + 0.4 * (f64::from(seconds) * speed).sin();
+            let strength = amount * 0.01 * pulse;
+            let mut want = colour;
+            for channel in 0..3 {
+                let base = display[channel];
+                let over = (f64::from(colour[channel] * alpha) * bright).powf(1.0 / 2.4) * strength;
+                let limited = base.min(1.0);
+                let screened = 1.0 - (1.0 - limited) * (1.0 - over) + base - limited;
+                want[channel] = screened.powf(2.4) as f32;
+            }
+            eprintln!(
+                "Bloom Pulse phase: {side}x{side}, t={seconds}, amount={amount}, speed={speed}, alpha={alpha}"
+            );
+            let got = gpu
+                .probe(&[pass], colour, side, seconds)
+                .expect("reads back");
+            assert!(
+                near(got, want, 0.004),
+                "Bloom Pulse t={seconds}: {got:?} vs {want:?}"
+            );
+        }
     }
 }
 
